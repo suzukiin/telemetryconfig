@@ -206,20 +206,88 @@ app.get('/api/logs', (req, res) => {
     }
 });
 
-app.listen(80, () => {
-    console.log('🚀 Servidor de telemetria rodando na porta 80');
-    console.log('📊 Dashboard disponível em: http://localhost');
-    
-    // Teste inicial dos dados do sistema
-    getSystemData().then(data => {
-        console.log('📈 Dados do sistema carregados:', {
-            tailscaleIP: data.tailscaleIP,
-            cpuTemp: data.cpuTemp + '°C',
-            ramUsage: data.ramUsage + '%',
-            diskUsage: data.diskUsage + '%',
-            uptime: data.uptime
-        });
-    }).catch(error => {
-        console.error('❌ Erro ao carregar dados do sistema:', error.message);
-    });
+app.listen(80, (error) => {
+    if (error) {
+        console.error('❌ Erro ao iniciar servidor:', error);
+        
+        // Se der erro na porta 80, tentar porta 3000
+        if (error.code === 'EACCES' || error.code === 'EADDRINUSE') {
+            console.log('⚠️  Porta 80 indisponível, tentando porta 3000...');
+            
+            app.listen(3000, (err) => {
+                if (err) {
+                    console.error('❌ Erro fatal ao iniciar servidor:', err);
+                    process.exit(1);
+                } else {
+                    console.log('🚀 Servidor de telemetria rodando na porta 3000');
+                    console.log('📊 Dashboard disponível em: http://localhost:3000');
+                    console.log('💡 Para usar porta 80, execute: sudo node index.js');
+                    initializeSystem();
+                }
+            });
+        } else {
+            console.error('❌ Erro fatal:', error);
+            process.exit(1);
+        }
+    } else {
+        console.log('🚀 Servidor de telemetria rodando na porta 80');
+        console.log('📊 Dashboard disponível em: http://localhost');
+        console.log('🌐 Acesso externo via IP do Raspberry Pi');
+        initializeSystem();
+    }
 });
+
+// Função para inicializar e testar o sistema
+async function initializeSystem() {
+    console.log('🔄 Inicializando sistema...');
+    
+    try {
+        // Teste inicial dos dados do sistema
+        const data = await getSystemData();
+        console.log('📈 Dados do sistema carregados com sucesso:');
+        console.log(`   • IP Tailscale: ${data.tailscaleIP}`);
+        console.log(`   • Temperatura CPU: ${data.cpuTemp}°C`);
+        console.log(`   • Uso RAM: ${data.ramUsage}% (${data.ramUsed}MB/${data.ramTotal}MB)`);
+        console.log(`   • Uso Disco: ${data.diskUsage}% (${data.diskUsed}/${data.diskTotal})`);
+        console.log(`   • Uptime: ${data.uptime}`);
+        console.log(`   • Conectividade: ${data.connectivity}`);
+        console.log(`   • Hostname: ${data.hostname}`);
+        console.log(`   • Plataforma: ${data.platform} (${data.arch})`);
+        
+        console.log('✅ Sistema inicializado com sucesso!');
+        console.log('🔄 Dados serão atualizados automaticamente a cada 30 segundos');
+        
+    } catch (error) {
+        console.error('❌ Erro ao carregar dados do sistema:', error.message);
+        console.log('⚠️  O servidor continuará rodando, mas alguns dados podem não estar disponíveis');
+    }
+}
+
+// Tratamento de erros não capturados
+process.on('uncaughtException', (error) => {
+    console.error('❌ Erro não capturado:', error);
+    console.log('🔄 Tentando continuar...');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('❌ Promise rejeitada não tratada:', reason);
+    console.log('🔄 Tentando continuar...');
+});
+
+// Tratamento de sinais de encerramento
+process.on('SIGINT', () => {
+    console.log('\n🛑 Recebido SIGINT (Ctrl+C)');
+    console.log('📊 Encerrando servidor de telemetria...');
+    process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+    console.log('\n🛑 Recebido SIGTERM');
+    console.log('📊 Encerrando servidor de telemetria...');
+    process.exit(0);
+});
+
+console.log('🚀 Iniciando servidor de telemetria...');
+console.log('📅 Data/Hora:', new Date().toLocaleString('pt-BR'));
+console.log('💻 Node.js versão:', process.version);
+console.log('📁 Diretório de trabalho:', process.cwd());

@@ -1,16 +1,21 @@
 {
-  "name": "home",
+  "name": "raspberry-pi-telemetry-dashboard",
   "version": "1.0.0",
+  "description": "Dashboard de telemetria SNMP para Raspberry Pi com monitoramento de sistema",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["raspberry-pi", "telemetry", "snmp", "dashboard", "monitoring"],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "body-parser": "^2.2.0",
     "express": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
