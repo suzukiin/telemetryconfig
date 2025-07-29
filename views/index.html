@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Telemetria - Raspberry Pi</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="background-overlay"></div>
+  
+  <!-- Header Principal -->
+  <div class="main-header">
+    <div class="header-content">
+      <div class="header-left">
+        <i class="fas fa-raspberry-pi header-icon"></i>
+        <div>
+          <h1>Dashboard Telemetria</h1>
+          <p class="subtitle">Raspberry Pi - Sistema de Monitoramento SNMP</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="status-indicator online">
+          <i class="fas fa-circle"></i>
+          Online
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Principal -->
+  <div class="dashboard">
+    
+    <!-- Seção de Status do Sistema -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <i class="fas fa-tachometer-alt"></i>
+        <h2>Status do Sistema</h2>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-network-wired"></i>
+          </div>
+          <div class="stat-content">
+            <h3>IP Tailscale</h3>
+            <p class="stat-value" id="tailscale-ip">Carregando...</p>
+            <span class="stat-label">Endereço da VPN</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon temperature">
+            <i class="fas fa-thermometer-half"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Temperatura CPU</h3>
+            <p class="stat-value" id="cpu-temp">--°C</p>
+            <span class="stat-label">Temperatura atual</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-memory"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Uso de RAM</h3>
+            <p class="stat-value" id="ram-usage">--%</p>
+            <span class="stat-label">Memória utilizada</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-hdd"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Armazenamento</h3>
+            <p class="stat-value" id="disk-usage">--%</p>
+            <span class="stat-label">Espaço utilizado</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Uptime</h3>
+            <p class="stat-value" id="uptime">--</p>
+            <span class="stat-label">Tempo ativo</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-wifi"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Conectividade</h3>
+            <p class="stat-value" id="connectivity">Verificando...</p>
+            <span class="stat-label">Status da rede</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seção de Configuração SNMP -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <i class="fas fa-cogs"></i>
+        <h2>Configuração SNMP</h2>
+        <button class="toggle-section" onclick="toggleSection('config-section')">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+      
+      <div class="section-content" id="config-section">
+      <div class="section-content" id="config-section">
+        <form action="/salvar" method="POST" class="telemetry-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="ip">
+                <i class="fas fa-server"></i>
+                IP do Equipamento
+              </label>
+              <input type="text" id="ip" name="ip" placeholder="Ex: 192.168.1.100" required>
+              <span class="input-hint">Endereço IP do dispositivo a ser monitorado</span>
+            </div>
+
+            <div class="form-group">
+              <label for="comunidade">
+                <i class="fas fa-key"></i>
+                Comunidade SNMP
+              </label>
+              <input type="text" id="comunidade" name="comunidade" placeholder="Ex: public" required>
+              <span class="input-hint">String de comunidade para autenticação SNMP</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="oids">
+              <i class="fas fa-list"></i>
+              OIDs para Monitoramento
+            </label>
+            <textarea id="oids" name="oids" placeholder="Ex: 1.3.6.1.2.1.1.1.0, 1.3.6.1.2.1.2.2.1.10" required></textarea>
+            <span class="input-hint">Object Identifiers separados por vírgula</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="intervalo">
+                <i class="fas fa-clock"></i>
+                Intervalo de Coleta
+              </label>
+              <div class="input-with-unit">
+                <input type="number" id="intervalo" name="intervalo" placeholder="60" required min="1" max="3600">
+                <span class="unit">segundos</span>
+              </div>
+              <span class="input-hint">Intervalo entre coletas (1 a 3600 segundos)</span>
+            </div>
+
+            <div class="form-group">
+              <label for="timeout">
+                <i class="fas fa-hourglass-half"></i>
+                Timeout SNMP
+              </label>
+              <div class="input-with-unit">
+                <input type="number" id="timeout" name="timeout" placeholder="5" required min="1" max="30">
+                <span class="unit">segundos</span>
+              </div>
+              <span class="input-hint">Tempo limite para resposta SNMP</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">
+              <i class="fas fa-undo"></i>
+              Limpar
+            </button>
+            <button type="button" class="btn btn-info" onclick="testConnection()">
+              <i class="fas fa-plug"></i>
+              Testar Conexão
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i>
+              Salvar Configuração
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Seção de Log de Atividades -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <i class="fas fa-list-alt"></i>
+        <h2>Log de Atividades</h2>
+        <button class="toggle-section" onclick="toggleSection('log-section')">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+      
+      <div class="section-content collapsed" id="log-section">
+        <div class="log-container">
+          <div class="log-controls">
+            <button class="btn btn-sm" onclick="clearLog()">
+              <i class="fas fa-trash"></i>
+              Limpar Log
+            </button>
+            <button class="btn btn-sm" onclick="refreshLog()">
+              <i class="fas fa-sync-alt"></i>
+              Atualizar
+            </button>
+          </div>
+          <div class="log-content" id="log-content">
+            <div class="log-entry info">
+              <span class="log-time">2025-07-29 10:30:15</span>
+              <span class="log-level">INFO</span>
+              <span class="log-message">Sistema iniciado com sucesso</span>
+            </div>
+            <div class="log-entry success">
+              <span class="log-time">2025-07-29 10:31:20</span>
+              <span class="log-level">SUCCESS</span>
+              <span class="log-message">Conectado ao dispositivo 192.168.1.100</span>
+            </div>
+            <div class="log-entry warning">
+              <span class="log-time">2025-07-29 10:32:45</span>
+              <span class="log-level">WARNING</span>
+              <span class="log-message">Timeout na consulta SNMP - tentativa 1/3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let systemData = {};
+
+    // Função para atualizar dados do sistema via API
+    async function updateSystemStats() {
+      try {
+        const response = await fetch('/api/system-data');
+        const data = await response.json();
+        
+        if (response.ok) {
+          systemData = data;
+          
+          // Atualizar IP Tailscale
+          document.getElementById('tailscale-ip').textContent = data.tailscaleIP;
+          
+          // Atualizar temperatura com cores baseadas no valor
+          const tempElement = document.getElementById('cpu-temp');
+          tempElement.textContent = data.cpuTemp !== 'N/A' ? `${data.cpuTemp}°C` : 'N/A';
+          const tempCard = tempElement.closest('.stat-card');
+          tempCard.classList.remove('warning', 'critical');
+          
+          if (data.cpuTemp !== 'N/A') {
+            const temp = parseFloat(data.cpuTemp);
+            if (temp > 70) {
+              tempCard.classList.add('critical');
+            } else if (temp > 60) {
+              tempCard.classList.add('warning');
+            }
+          }
+          
+          // Atualizar outros dados
+          document.getElementById('ram-usage').textContent = `${data.ramUsage}%`;
+          document.getElementById('disk-usage').textContent = `${data.diskUsage}%`;
+          document.getElementById('uptime').textContent = data.uptime;
+          document.getElementById('connectivity').textContent = data.connectivity;
+          
+          // Atualizar indicador de status
+          const statusIndicator = document.querySelector('.status-indicator');
+          if (data.connectivity === 'Estável') {
+            statusIndicator.className = 'status-indicator online';
+            statusIndicator.innerHTML = '<i class="fas fa-circle"></i> Online';
+          } else {
+            statusIndicator.className = 'status-indicator offline';
+            statusIndicator.innerHTML = '<i class="fas fa-circle"></i> Offline';
+          }
+          
+          console.log('✅ Dados do sistema atualizados:', data);
+        } else {
+          console.error('❌ Erro ao obter dados do sistema:', data);
+          showError('Erro ao carregar dados do sistema');
+        }
+      } catch (error) {
+        console.error('❌ Erro na requisição:', error);
+        showError('Erro de conectividade com o servidor');
+      }
+    }
+
+    function showError(message) {
+      // Mostrar dados como "Erro" em caso de falha
+      document.getElementById('tailscale-ip').textContent = 'Erro';
+      document.getElementById('cpu-temp').textContent = 'N/A';
+      document.getElementById('ram-usage').textContent = '-%';
+      document.getElementById('disk-usage').textContent = '-%';
+      document.getElementById('uptime').textContent = 'N/A';
+      document.getElementById('connectivity').textContent = 'Erro';
+      
+      // Adicionar toast de erro (opcional)
+      console.warn('⚠️', message);
+    }
+
+    function toggleSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      const button = event.target.closest('.toggle-section');
+      const icon = button.querySelector('i');
+      
+      section.classList.toggle('collapsed');
+      
+      if (section.classList.contains('collapsed')) {
+        icon.style.transform = 'rotate(-90deg)';
+      } else {
+        icon.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    function resetForm() {
+      document.querySelector('.telemetry-form').reset();
+    }
+
+    async function testConnection() {
+      const ip = document.getElementById('ip').value;
+      const comunidade = document.getElementById('comunidade').value;
+      
+      if (!ip || !comunidade) {
+        alert('Por favor, preencha IP e Comunidade SNMP para testar a conexão.');
+        return;
+      }
+      
+      const button = event.target;
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testando...';
+      button.disabled = true;
+      
+      try {
+        const response = await fetch('/api/test-snmp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ip, comunidade })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ ' + result.message);
+          addLogEntry('SUCCESS', `Teste SNMP bem-sucedido para ${ip}`);
+        } else {
+          alert('❌ ' + result.message);
+          addLogEntry('ERROR', `Falha no teste SNMP para ${ip}: ${result.message}`);
+        }
+      } catch (error) {
+        alert('❌ Erro na comunicação com o servidor');
+        addLogEntry('ERROR', `Erro na comunicação: ${error.message}`);
+      } finally {
+        button.innerHTML = originalText;
+        button.disabled = false;
+      }
+    }
+
+    // Interceptar o envio do formulário para usar fetch ao invés de form tradicional
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('.telemetry-form');
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+        submitButton.disabled = true;
+        
+        try {
+          const response = await fetch('/salvar', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+          });
+          
+          const result = await response.json();
+          
+          if (result.success) {
+            alert('✅ ' + result.message);
+            addLogEntry('SUCCESS', `Configuração salva para ${data.ip}`);
+          } else {
+            alert('❌ ' + result.message);
+            addLogEntry('ERROR', `Erro ao salvar configuração: ${result.message}`);
+          }
+        } catch (error) {
+          alert('❌ Erro ao salvar configuração');
+          addLogEntry('ERROR', `Erro ao salvar: ${error.message}`);
+        } finally {
+          submitButton.innerHTML = originalText;
+          submitButton.disabled = false;
+        }
+      });
+    });
+
+    function clearLog() {
+      document.getElementById('log-content').innerHTML = '';
+    }
+
+    async function refreshLog() {
+      try {
+        const response = await fetch('/api/logs');
+        const logs = await response.json();
+        
+        const logContent = document.getElementById('log-content');
+        logContent.innerHTML = '';
+        
+        logs.forEach(log => {
+          addLogEntryDirect(log.level, log.message, log.timestamp);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar logs:', error);
+      }
+    }
+
+    function addLogEntry(level, message) {
+      const now = new Date();
+      addLogEntryDirect(level, message, now.toISOString());
+    }
+
+    function addLogEntryDirect(level, message, timestamp) {
+      const logContent = document.getElementById('log-content');
+      const timeStr = new Date(timestamp).toLocaleString('pt-BR');
+      
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${level.toLowerCase()}`;
+      entry.innerHTML = `
+        <span class="log-time">${timeStr}</span>
+        <span class="log-level">${level}</span>
+        <span class="log-message">${message}</span>
+      `;
+      
+      logContent.insertBefore(entry, logContent.firstChild);
+      
+      // Limitar a 50 entradas
+      if (logContent.children.length > 50) {
+        logContent.removeChild(logContent.lastChild);
+      }
+    }
+
+    // Validação em tempo real do IP
+    document.getElementById('ip').addEventListener('input', function(e) {
+      const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+      const isValid = ipPattern.test(e.target.value);
+      
+      if (e.target.value && !isValid) {
+        e.target.classList.add('invalid');
+      } else {
+        e.target.classList.remove('invalid');
+      }
+    });
+
+    // Auto-resize do textarea
+    document.getElementById('oids').addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = this.scrollHeight + 'px';
+    });
+
+    // Inicializar dados do sistema
+    updateSystemStats();
+    
+    // Atualizar dados do sistema a cada 30 segundos
+    setInterval(updateSystemStats, 30000);
+    
+    // Log de inicialização
+    addLogEntry('INFO', 'Dashboard carregado com sucesso');
+  </script>
+</body>
+</html>
