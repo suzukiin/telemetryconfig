@@ -1,0 +1,4093 @@
+SOCEXCITER-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+       OBJECT-TYPE, MODULE-IDENTITY, NOTIFICATION-TYPE, enterprises, Integer32, IpAddress
+				FROM SNMPv2-SMI
+       OBJECT-GROUP
+				FROM SNMPv2-CONF;
+	       
+moduleIdentity MODULE-IDENTITY
+       LAST-UPDATED "202306200834Z"
+       ORGANIZATION
+               "Hitachi Kokusai Linear Equipamentos Eletronicos S.A."
+       CONTACT-INFO 
+               "Linear Equipamentos Eletronicos S.A.,
+               Av. Frederico de Paula Cunha, 1001,
+               Bairro Maristela,
+               Santa Rita do Sapucai, MG,
+               Brasil,
+               www.hitachi-linear.com.br"
+       DESCRIPTION
+               "EC710LP"
+       REVISION "202306200834Z"
+       DESCRIPTION
+               "Rev. 1.0"
+
+::= { ec710lp 0 }
+
+--     Address: IANA
+--         USC/Information Sciences Institute
+--         4676 Admiralty Way
+--         Marina del Rey, CA 90292
+--
+--         Phone:   +1 (310) 822-1511
+--         FAX:     +1 (310) 823-6714
+--
+--         Email:  iana-mib@isi.edu    (for enterprise identifiers)
+--                 iana@isi.edu        (for anything else)
+--
+--         URL:     http://www.iana.org/iana
+
+linear									OBJECT IDENTIFIER ::= { enterprises 25026 }
+ec710lp									OBJECT IDENTIFIER ::= { linear 7 }
+conformance								OBJECT IDENTIFIER ::= { moduleIdentity 0 }
+groups									OBJECT IDENTIFIER ::= { conformance 0 }
+equipment								OBJECT IDENTIFIER ::= { ec710lp 1 }
+setup									OBJECT IDENTIFIER ::= { equipment 1 }
+setupPower								OBJECT IDENTIFIER ::= { setup 1 }
+setupTransmitter						OBJECT IDENTIFIER ::= { setup 2 }
+digitalSignalProcessing					OBJECT IDENTIFIER ::= { setup 3 }
+nonLinearPreCorrection					OBJECT IDENTIFIER ::= { digitalSignalProcessing 1 }
+linearPreCorrection						OBJECT IDENTIFIER ::= { digitalSignalProcessing 2 }
+powerSpectrumDensity					OBJECT IDENTIFIER ::= { digitalSignalProcessing 3 }
+demodulation							OBJECT IDENTIFIER ::= { digitalSignalProcessing 4 }
+modulation								OBJECT IDENTIFIER ::= { setup 4 }
+setupTransportStream					OBJECT IDENTIFIER ::= { setup 5 }
+setupTsInput							OBJECT IDENTIFIER ::= { setupTransportStream 1 }
+setupTsOutput							OBJECT IDENTIFIER ::= { setupTransportStream 2 }
+ethStream								OBJECT IDENTIFIER ::= { setup 6 }
+setupTunerReceiver						OBJECT IDENTIFIER ::= { setup 7 }
+setupSatelliteTuner						OBJECT IDENTIFIER ::= { setupTunerReceiver 1 }
+setupTerrestrialTuner					OBJECT IDENTIFIER ::= { setupTunerReceiver 2 }
+setupConditionalAccessModule			OBJECT IDENTIFIER ::= { setup 8 }
+casDecrypt								OBJECT IDENTIFIER ::= { setupConditionalAccessModule 1 }
+service1								OBJECT IDENTIFIER ::= { setupConditionalAccessModule 2 }
+service2								OBJECT IDENTIFIER ::= { setupConditionalAccessModule 3 }
+service3								OBJECT IDENTIFIER ::= { setupConditionalAccessModule 4 }
+service4								OBJECT IDENTIFIER ::= { setupConditionalAccessModule 5 }
+service5								OBJECT IDENTIFIER ::= { setupConditionalAccessModule 6 }
+service6								OBJECT IDENTIFIER ::= { setupConditionalAccessModule 7 }
+service7								OBJECT IDENTIFIER ::= { setupConditionalAccessModule 8 }
+service8								OBJECT IDENTIFIER ::= { setupConditionalAccessModule 9 }
+setupBiss								OBJECT IDENTIFIER ::= { setup 9 }
+setupBissControl						OBJECT IDENTIFIER ::= { setupBiss 1 }
+setupBissMode							OBJECT IDENTIFIER ::= { setupBissControl 1 }
+setupBissBiss1							OBJECT IDENTIFIER ::= { setupBissControl 2 }
+setupBissBisse							OBJECT IDENTIFIER ::= { setupBissControl 3 }
+setupBissService						OBJECT IDENTIFIER ::= { setupBiss 2 }
+setupBissService1						OBJECT IDENTIFIER ::= { setupBissService 1 }
+setupBissService2						OBJECT IDENTIFIER ::= { setupBissService 2 }
+setupBissService3						OBJECT IDENTIFIER ::= { setupBissService 3 }
+setupBissService4						OBJECT IDENTIFIER ::= { setupBissService 4 }
+setupBissService5						OBJECT IDENTIFIER ::= { setupBissService 5 }
+setupBissService6						OBJECT IDENTIFIER ::= { setupBissService 6 }
+setupBissService7						OBJECT IDENTIFIER ::= { setupBissService 7 }
+setupBissService8						OBJECT IDENTIFIER ::= { setupBissService 8 }
+setupBissService9						OBJECT IDENTIFIER ::= { setupBissService 9 }
+setupBissService10						OBJECT IDENTIFIER ::= { setupBissService 10 }
+setupBissService11						OBJECT IDENTIFIER ::= { setupBissService 11 }
+setupBissService12						OBJECT IDENTIFIER ::= { setupBissService 12 }
+setupAlarmsMask							OBJECT IDENTIFIER ::= { setup 10 }
+setupAlarmsMaskPsuComm					OBJECT IDENTIFIER ::= { setupAlarmsMask 1 }
+setupAlarmsMaskActivateStream			OBJECT IDENTIFIER ::= { setupAlarmsMask 2 }
+descramblerFail							OBJECT IDENTIFIER ::= { setupAlarmsMask 3 }
+setupStartedEquipmentMask				OBJECT IDENTIFIER ::= { setupAlarmsMask 4 }
+setupAlarmsMaskFilterFan				OBJECT IDENTIFIER ::= { setupAlarmsMask 5 }
+setupAlarmsMaskRefClock					OBJECT IDENTIFIER ::= { setupAlarmsMask 6 }
+singleFrequencyNetwork					OBJECT IDENTIFIER ::= { setup 11 }
+sfnConfiguration						OBJECT IDENTIFIER ::= { singleFrequencyNetwork 1 }
+sfnInputFifoConfig						OBJECT IDENTIFIER ::= { singleFrequencyNetwork 2 }
+btsDecompressor							OBJECT IDENTIFIER ::= { setup 12 }
+btsDecompressorAsi1						OBJECT IDENTIFIER ::= { btsDecompressor 1 }
+btsDecompressorAsi2						OBJECT IDENTIFIER ::= { btsDecompressor 2 }
+btsDecompressorEth						OBJECT IDENTIFIER ::= { btsDecompressor 3 }
+btsDecompressorTuner					OBJECT IDENTIFIER ::= { btsDecompressor 4 }
+btsFifo									OBJECT IDENTIFIER ::= { setup 13 }
+virtualPhysicalChannel					OBJECT IDENTIFIER ::= { setup 14 }
+virtualPhysicalChannelAsi1				OBJECT IDENTIFIER ::= { virtualPhysicalChannel 1 }
+virtualPhysicalChannelAsi2				OBJECT IDENTIFIER ::= { virtualPhysicalChannel 2 }
+virtualPhysicalChannelEth				OBJECT IDENTIFIER ::= { virtualPhysicalChannel 3 }
+virtualPhysicalChannelTuner				OBJECT IDENTIFIER ::= { virtualPhysicalChannel 4 }
+totEditor								OBJECT IDENTIFIER ::= { setup 15 }
+totEditorAsi1							OBJECT IDENTIFIER ::= { totEditor 1 }
+totEditorAsi2							OBJECT IDENTIFIER ::= { totEditor 2 }
+totEditorEth							OBJECT IDENTIFIER ::= { totEditor 3 }
+totEditorTuner							OBJECT IDENTIFIER ::= { totEditor 4 }
+setupOscillatorsTimeBase				OBJECT IDENTIFIER ::= { setup 16 }
+timeAndDate								OBJECT IDENTIFIER ::= { setup 17 }
+setupPassword							OBJECT IDENTIFIER ::= { setup 18 }
+remoteMuteRf							OBJECT IDENTIFIER ::= { setup 20 }
+remoteReset								OBJECT IDENTIFIER ::= { setup 30 }
+measurements							OBJECT IDENTIFIER ::= { equipment 2 }
+measPower								OBJECT IDENTIFIER ::= { measurements 1 }
+measSignal								OBJECT IDENTIFIER ::= { measurements 2 }
+measTransportStream						OBJECT IDENTIFIER ::= { measurements 3 }
+measCurrentTmcc							OBJECT IDENTIFIER ::= { measTransportStream 1 }
+measSfn									OBJECT IDENTIFIER ::= { measurements 4 }
+measSfnParameters						OBJECT IDENTIFIER ::= { measSfn 1 }
+measEquipmentParameters					OBJECT IDENTIFIER ::= { measSfn 2 }
+measPowerAmplifier						OBJECT IDENTIFIER ::= { measurements 5 }
+measTransmitter							OBJECT IDENTIFIER ::= { measurements 6 }
+measTransmitterPower					OBJECT IDENTIFIER ::= { measTransmitter 1 }
+measTransmitterPs1						OBJECT IDENTIFIER ::= { measTransmitter 2 }
+measTransmitterPs2						OBJECT IDENTIFIER ::= { measTransmitter 3 }
+softwareHardwareVersion					OBJECT IDENTIFIER ::= { measurements 7 }
+measTunerReceiver						OBJECT IDENTIFIER ::= { measurements 8 }
+measSatelliteTuner						OBJECT IDENTIFIER ::= { measTunerReceiver 1 }
+measTerrestrialTuner					OBJECT IDENTIFIER ::= { measTunerReceiver 2 }
+measOscillatorsTimeBase					OBJECT IDENTIFIER ::= { measurements 9 }
+measVirtualPhysicalChannel				OBJECT IDENTIFIER ::= { measurements 10 }
+measInternalGps							OBJECT IDENTIFIER ::= { measurements 11 }
+measInternalGpsSnr						OBJECT IDENTIFIER ::= { measInternalGps 1 }
+measInternalGpsConf						OBJECT IDENTIFIER ::= { measInternalGps 2 }
+measConditionalAccessModule				OBJECT IDENTIFIER ::= { measurements 12 }
+equipmentLicensesEnabled				OBJECT IDENTIFIER ::= { measurements 13 }
+alarms									OBJECT IDENTIFIER ::= { equipment 3 }
+alarmsFaults							OBJECT IDENTIFIER ::= { alarms 1 }
+snmpAlarmStatus							OBJECT IDENTIFIER ::= { alarms 4 }
+ethControlPort							OBJECT IDENTIFIER ::= { equipment 4 }
+ethManagement							OBJECT IDENTIFIER ::= { ethControlPort 1 }
+
+alarmPpsFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates lock of PPS signal and impossibility of automatically calculating the delay in SFN. Check the 1PPS and 10-MHz references."
+			::=  { alarmsFaults 1 }
+
+alarmAllPsuCommFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Check the green rear exciter connector. It may be disconected."
+			::=  { alarmsFaults 2 }
+
+alarmAsi1Fail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates failure in the ASI 1 input signal. Check whether the input signal is present. Check the connection of ASI 1 cable."
+			::=  { alarmsFaults 3 }
+
+alarmAsi2Fail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates failure in the ASI 2 input signal. Check whether the input signal is present. Check the connection of ASI 2 cable."
+			::=  { alarmsFaults 4 }
+
+alarmBtsAlignmentError OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates impossibility of SFN operation; as a consequence, the transmission power output is reduced. Check the BTS input. Check the 1PPS and 10-MHz references, or internal GPS operation."
+			::=  { alarmsFaults 5 }
+
+alarmCalibrationCrcFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates an error on load calibrations data."
+			::=  { alarmsFaults 6 }
+
+alarmCamFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"The DVB S / S2 signal can not be demodulated, either by the absence or low signal-to-noise ratio available. Check the connection between antena and digital exciter. Check the Satellite Tuner Settings."
+			::=  { alarmsFaults 7 }
+
+alarmClockLockFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates loss of LOCK (PLL of the Modulator)."
+			::=  { alarmsFaults 8 }
+
+alarmMuteFi OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Failure in the Digital - Analogic Converter (DAC) Communication."
+			::=  { alarmsFaults 9 }
+
+alarmDescramblerFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Check if the Card is connected in the Digital Transmitter."
+			::=  { alarmsFaults 10 }
+
+alarmV50EqpFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates power supply failure of + 50V. You will need to examine the operation of the power supply, located on the Digital Exciter."
+			::=  { alarmsFaults 11 }
+
+alarmV15ExcFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates power supply failure of + 15V. You will need to examine the operation of the power supply, located on the Digital Exciter."
+			::=  { alarmsFaults 12 }
+
+alarmV28ExcFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates power supply failure of + 28V. You will need to examine the operation of the power supply, located on the Digital Exciter."
+			::=  { alarmsFaults 13 }
+
+alarmV3v3ExcFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates power supply failure of + 3,3V. You will need to examine the operation of the power supply, located on the Digital Exciter."
+			::=  { alarmsFaults 14 }
+
+alarmRfLoadFan OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that there is a PA Fan and/or FPGA Fan failure."
+			::=  { alarmsFaults 15 }
+
+alarmFifoOverflow OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates an internal overflow of SFN FIFO Memory . Check that the clock reference system is correct."
+			::=  { alarmsFaults 16 }
+
+alarmFifoUnderflow OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates an internal underflow of SFN FIFO Memory . Check that the clock reference system is correct."
+			::=  { alarmsFaults 17 }
+
+alarmV5FpgaFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates power supply failure of + 5V. You will need to examine the operation of the power supply, located on the Digital Exciter."
+			::=  { alarmsFaults 18 }
+
+alarmFpgaCommun OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates failure of FPGA communication with the Operating System."
+			::=  { alarmsFaults 19 }
+
+alarmHighFpgaTemperature OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that FPGA Temperature is above 70C."
+			::=  { alarmsFaults 20 }
+
+alarmHwFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates a hardware fail."
+			::=  { alarmsFaults 21 }
+
+alarmLoLockFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates loss of LOCK (UP Converter)."
+			::=  { alarmsFaults 22 }
+
+alarmLutDefault OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that the equipment isnt calibrated."
+			::=  { alarmsFaults 23 }
+
+alarmLutFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates an inconsistency in lut values."
+			::=  { alarmsFaults 24 }
+
+alarmRfFilterFan OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that there is an Output Mask Filter Fan failure."
+			::=  { alarmsFaults 25 }
+
+alarmOcxoLockFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates loss of Modulator clock lock."
+			::=  { alarmsFaults 26 }
+
+alarmOutputPowerZero OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates output RF power programmed, but no reading feedbacking. Check the reflectometer. Check DB-9 connectors between exciter and PAs. Check RF connection between exciter and Spliter or PA. Check presence of reflected power"
+			::=  { alarmsFaults 27 }
+
+alarmOverdriveLowPower OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that transmitter power exceeded 20% of its maximum limit."
+			::=  { alarmsFaults 28 }
+
+alarmCriticalPaTemperature OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Amplifier Temperature is above 85C."
+			::=  { alarmsFaults 29 }
+
+alarmHighPaCurrent OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Amplifier Current exceeded 10% of its maximum limit."
+			::=  { alarmsFaults 30 }
+
+alarmHighPaTemperature OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Amplifier Temperature is above 80C."
+			::=  { alarmsFaults 31 }
+
+alarmZeroPaCurrent OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates the Power Amplifier or Fuse are damage. Please contact the HKL Suport."
+			::=  { alarmsFaults 32 }
+
+alarmSuperCriticalPaTemperature OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Amplifier Temperature is above 90C."
+			::=  { alarmsFaults 33 }
+
+alarmPaTemperature OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Amplifier Temperature is above 75C."
+			::=  { alarmsFaults 34 }
+
+alarmPaUnbalance OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"It indicates that the current difference of the PA transistors exceeded 2,5A."
+			::=  { alarmsFaults 35 }
+
+alarmPsu1CommFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates communication failure with Power Supply 1."
+			::=  { alarmsFaults 36 }
+
+alarmPsu1HighCurrent OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 1 Current is above 23A."
+			::=  { alarmsFaults 37 }
+
+alarmPsu1HighInputVoltage OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 1 Input Voltage is hight."
+			::=  { alarmsFaults 38 }
+
+alarmPsu1HighTemp OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 1 Temperature is above 58C."
+			::=  { alarmsFaults 39 }
+
+alarmPsu1HighVoltage OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 1 Voltage is above 53V."
+			::=  { alarmsFaults 40 }
+
+alarmPsu1LowInputVoltage OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 1 Input Voltage is low."
+			::=  { alarmsFaults 41 }
+
+alarmPsu1LowVoltage OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 1 Voltage is below 47V."
+			::=  { alarmsFaults 42 }
+
+alarmPsu2CommFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates communication failure with Power Supply 2."
+			::=  { alarmsFaults 43 }
+
+alarmPsu2HighCurrent OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 2 Current is above 23A."
+			::=  { alarmsFaults 44 }
+
+alarmPsu2HighInputVoltage OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 2 Input Voltage is hight."
+			::=  { alarmsFaults 45 }
+
+alarmPsu2HighTemp OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 2 Temperature is above 58C."
+			::=  { alarmsFaults 46 }
+
+alarmPsu2HighVoltage OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 2 Voltage is above 53V."
+			::=  { alarmsFaults 47 }
+
+alarmPsu2LowInputVoltage OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 2 Input Voltage is low."
+			::=  { alarmsFaults 48 }
+
+alarmPsu2LowVoltage OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply 2 Voltage is below 47V."
+			::=  { alarmsFaults 49 }
+
+alarmPsuLoadFan OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that there is a Power Supply Fan failure."
+			::=  { alarmsFaults 50 }
+
+alarmHighFontCurrent OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply exceeded 10% of its maximum limit."
+			::=  { alarmsFaults 51 }
+
+alarmSuperCriticalPsuTemperature OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that Power Supply Temperature is above 62C."
+			::=  { alarmsFaults 52 }
+
+alarmReducedPower OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reduced power caused by reflected power or SFN fail."
+			::=  { alarmsFaults 53 }
+
+alarmReducedPowerByPsu OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Output power has been reduced by PSU failings"
+			::=  { alarmsFaults 54 }
+
+alarmReducedPowerReflected OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reduction of output power caused by reflected power."
+			::=  { alarmsFaults 55 }
+
+alarmReducedPowerSfn OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reduction of output power caused by SFN Fail."
+			::=  { alarmsFaults 56 }
+
+alarmReducedPowerPaTemp OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reduction of output power caused by PA high temperature."
+			::=  { alarmsFaults 57 }
+
+alarmReflectedPowerError OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates the reflected energy alarm. Check the output cables and the radiating system."
+			::=  { alarmsFaults 58 }
+
+alarmRemoteRfMute OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that the equipment output power was remotely zeroed. No measure needs to be taken, as this alarm is intentionally caused by the system operator."
+			::=  { alarmsFaults 59 }
+
+alarmRfMuteByExternalCommand OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates RF Mute by External Command."
+			::=  { alarmsFaults 60 }
+
+alarmRfMuteStreamLoss OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that the equipment output power was zeroed by input stream fail."
+			::=  { alarmsFaults 61 }
+
+alarmReducedPowerTx OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reduction of output power caused by transistors damaged."
+			::=  { alarmsFaults 62 }
+
+alarmSfnMaxDelay OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Verify the Path Delay measure and the Offset Delay Setting."
+			::=  { alarmsFaults 63 }
+
+alarmSfnNsiError OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Check if the stream input contains SFN parameters."
+			::=  { alarmsFaults 64 }
+
+alarmSfnOcxoUnlocked OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates loss of Modulator clock lock. Check Clock Reference is connected in the Digital Exciter and Verify the Clock Reference Settings."
+			::=  { alarmsFaults 65 }
+
+alarmSfnStreamError OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Check if the Stream Input is connected correctly and its settings SFN Mode."
+			::=  { alarmsFaults 66 }
+
+alarmStartedEquipment OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates when the equipament was started."
+			::=  { alarmsFaults 67 }
+
+alarmStreamSyncLoss OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"The Broadcasting Transport Stream (BTS) or Transport Stream (TS) for the selected input was not present or out of synchronism. Check the selected stream input: ASI1, ASI2, TS over IP, or Satellite Tuner"
+			::=  { alarmsFaults 68 }
+
+alarmTsOverEthernetFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"The Transport Stream over Ethernet cannot be opened or is not present. Check the connection of the Ethernet cable in the Exciters rear port and whether the setup parameters of this input (Multicast IP, Protocol and Port) are correct in relation to the server for this flow. Check the setup of TS switch and whether the option TS Over Ethernet is enabled; access Setup Menu -> Transport Stream -> Input."
+			::=  { alarmsFaults 69 }
+
+alarmTunerUnlocked OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"The DVB-S/S2 or ISDB-TB signal cannot be demodulated because the available signal/noise ratio is either missing or too low. Check the receiving antenna system, its connection to the exciter and the receivers setup parameters (satellital receiver: channel frequency, L.O., polarization and symbol rate; terrestrial receiver: proper UHF channel selection). If the connection and setup are correct, check the current signal/noise ratio and whether there is a bit error rate. Check the receiving antenna system, its connection to the excitation drawer and the receivers setup parameters (satellital receiver: channel frequency, L.O., polarization and symbol rate; terrestrial receiver: proper UHF channel selection). If the connection and setup are correct, check the current signal/noise ratio and whether there is a bit error rate."
+			::=  { alarmsFaults 70 }
+
+alarmSampleFeedbackFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"There is no signal in before filter feedback sample and DN-Adaptive DPD is on."
+			::=  { alarmsFaults 71 }
+
+alarmGpsUnlocked OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that the internal GPS receiver is unlocked."
+			::=  { alarmsFaults 72 }
+
+alarmExtPpsUnlocked OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that the External 1PPS is not a valid reference for the OCXO or is not present."
+			::=  { alarmsFaults 73 }
+
+alarmManagementIpAddrLocalReset OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that the IP address of Ethernet Management Port was changed to default value 192.168.100.18 by local reset button activation."
+			::=  { alarmsFaults 74 }
+
+alarmInvalidTmcc OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Modulator not running due to invalid TMCC configuration. Check the TMCC configuration for the current TS input."
+			::=  { alarmsFaults 75 }
+
+networkStatus OBJECT-TYPE
+			SYNTAX INTEGER { disconnected(0), connected(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reports if the Management Service Port is Connected to Ethernet Cable."
+			::=  { ethManagement 1 }
+
+fpgaBoardTemperature OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Temperature on FPGA board inside exciter.(Apply Mask 0,0)"
+			::=  { measTransmitterPower 1 }
+
+fpgaFanRotation OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"FPGA Fan PWM control."
+			::=  { measTransmitterPower 2 }
+
+exciterPowerSupply3v3 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Measurement of the 3.3V Power Supply.(Apply Mask 0,0)"
+			::=  { measTransmitterPower 3 }
+
+exciterPowerSupply5v OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Measurement of the 5V Power Supply.(Apply Mask 0,0)"
+			::=  { measTransmitterPower 4 }
+
+exciterPowerSupply15v OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Measurement of the 15V Power Supply.(Apply Mask 0,0)"
+			::=  { measTransmitterPower 5 }
+
+exciterPowerSupply28v OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Measurement of the 28V Power Supply.(Apply Mask 0,0)"
+			::=  { measTransmitterPower 6 }
+
+exciterPower1Supply50v OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Mesurement of the +50V Power Supply 1 output.(Apply Mask 0,0)"
+			::=  { measTransmitterPs1 1 }
+
+exciterPower2Supply50v OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Mesurement of the +50V Power Supply 2 output.(Apply Mask 0,0)"
+			::=  { measTransmitterPs2 1 }
+
+exciterPower1SupplyCurrent OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Mesurement of the Power Supply 1 total current consumption.(Apply Mask 0,0)"
+			::=  { measTransmitterPs1 2 }
+
+exciterPower2SupplyCurrent OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Mesurement of the Power Supply 2 total current consumption.(Apply Mask 0,0)"
+			::=  { measTransmitterPs2 2 }
+
+exciterPower1SupplyAc OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Measurement of the Power Supply 1 Input Voltage.(Apply Mask 0,0)"
+			::=  { measTransmitterPs1 3 }
+
+exciterPower2SupplyAc OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Measurement of the Power Supply 2 Input Voltage.(Apply Mask 0,0)"
+			::=  { measTransmitterPs2 3 }
+
+exciterPower1InputVoltageType OBJECT-TYPE
+			SYNTAX INTEGER { notpresent(0), ac(1), dcpositive(2), dcnegative(3) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Show if Power Supply 1 Input Voltage is AC or DC."
+			::=  { measTransmitterPs1 4 }
+
+exciterPower2InputVoltageType OBJECT-TYPE
+			SYNTAX INTEGER { notpresent(0), ac(1), dcpositive(2), dcnegative(3) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Show if Power Supply 2 Input Voltage is AC or DC."
+			::=  { measTransmitterPs2 4 }
+
+exciterPower1SupplyTemperature OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Measurement of the Power Supply 1 Temperature.(Apply Mask 0,0)"
+			::=  { measTransmitterPs1 5 }
+
+exciterPower2SupplyTemperature OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Measurement of the Power Supply 2 Temperature.(Apply Mask 0,0)"
+			::=  { measTransmitterPs2 5 }
+
+camCardPresent OBJECT-TYPE
+			SYNTAX INTEGER { unconnected(0), connected(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reports the presence or not of the PCMCIA card."
+			::=  { measConditionalAccessModule 1 }
+
+camTsPresent OBJECT-TYPE
+			SYNTAX INTEGER { notpresent(0), present(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reports the presence or absence of the transport stream signal at the input of the conditional access module."
+			::=  { measConditionalAccessModule 2 }
+
+camCardConfigStatus OBJECT-TYPE
+			SYNTAX INTEGER { error(0), ok(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reports if there any error on the PCMCIA card configuration."
+			::=  { measConditionalAccessModule 3 }
+
+camDescrambler OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reports if the stream at the output of the PCMCIA card is being descrambling or not."
+			::=  { measConditionalAccessModule 4 }
+
+activeInput OBJECT-TYPE
+			SYNTAX INTEGER { pn(0), asi1(1), asi2(2), tuner(3), tsoverethernet(4) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reports which stream input is current."
+			::=  { measCurrentTmcc 1 }
+
+inputSteamType OBJECT-TYPE
+			SYNTAX INTEGER { ts(0), bts(1), btsc(2) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Reports the stream input format."
+			::=  { measCurrentTmcc 2 }
+
+btsMode OBJECT-TYPE
+			SYNTAX INTEGER { mode1(0), mode2(1), mode3(2) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"ISDB-T (I)FFT Mode. 0: Mode 1 - 2048 points. 1: Mode 2 - 4096 points. 3: Mode 3 - 8192 points. Number of points on frequency domain. These number of complex coefficients will be used by the Inverse Discrete Fourier Transform in order to generate the OFDM time domain symbol."
+			::=  { measCurrentTmcc 3 }
+
+btsGuardInterval OBJECT-TYPE
+			SYNTAX INTEGER { gi1over32(0), gi1over16(1), gi1over8(2), gi1over4(3) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Configure duration of guard interval with respect to the effective symbol duration. The higher the guard interval, the higher the protection against multipath at the expense of lower payload bit rate."
+			::=  { measCurrentTmcc 4 }
+
+btsModulationLayerA OBJECT-TYPE
+			SYNTAX INTEGER { dqpsk(0), qpsk(1), mod16qam(2), mod64qam(3), notused(4) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Each Hierarquichal Layer is composed of a number of segments. Each segment is composed by a group of sub-carriers. This parameter configure the modulation standard for the data sub-carriers for each Layer."
+			::=  { measCurrentTmcc 5 }
+
+btsNumberOfSegmentsLayerA OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Number of segments for each Hierarquical Layer. The sum of the number of segments for all Layers must be 13."
+			::=  { measCurrentTmcc 6 }
+
+btsCodeRateLayerA OBJECT-TYPE
+			SYNTAX INTEGER { fec1over2(0), fec2over3(1), fec3over4(2), fec5over6(3), fec7over8(4), notused(5) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Each Hierarquichal Layer deploys a convolutional encoder block for forward error correction. This parameter configure the code rate for each Layer. The code rate is formed by a ratio: Number of bits Input / Numbers of bits Output. The ratio 1/2 provides the higher transmission robustness with the lowest payload date rate. The ratio 7/8 provides the lowest transmission robustness with the highest payload data rate."
+			::=  { measCurrentTmcc 7 }
+
+btsTimeInterleavingLengthLayerA OBJECT-TYPE
+			SYNTAX INTEGER { tm0(0), tm1(1), tm2(2), tm3(3), notused(4) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Time interleaving is intended to ensure improved the robustness against fading interference by randomizing symbol data in terms of the time after modulation."
+			::=  { measCurrentTmcc 8 }
+
+btsModulationLayerB OBJECT-TYPE
+			SYNTAX INTEGER { dqpsk(0), qpsk(1), mod16qam(2), mod64qam(3), notused(4) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Each Hierarquichal Layer is composed of a number of segments. Each segment is composed by a group of sub-carriers. This parameter configure the modulation standard for the data sub-carriers for each Layer."
+			::=  { measCurrentTmcc 9 }
+
+btsNumberOfSegmentsLayerB OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Number of segments for each Hierarquical Layer. The sum of the number of segments for all Layers must be 13."
+			::=  { measCurrentTmcc 10 }
+
+btsCodeRateLayerB OBJECT-TYPE
+			SYNTAX INTEGER { fec1over2(0), fec2over3(1), fec3over4(2), fec5over6(3), fec7over8(4), notused(5) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Each Hierarquichal Layer deploys a convolutional encoder block for forward error correction. This parameter configure the code rate for each Layer. The code rate is formed by a ratio: aNumber of bits Input / Numbers of bits Outputa. The ratio 1/2 provides the higher transmission robustness with the lowest payload date rate. The ratio 7/8 provides the lowest transmission robustness with the highest payload data rate."
+			::=  { measCurrentTmcc 11 }
+
+btsTimeInterleavingLengthLayerB OBJECT-TYPE
+			SYNTAX INTEGER { tm0(0), tm1(1), tm2(2), tm3(3), notused(4) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Time interleaving is intended to ensure improved the robustness against fading interference by randomizing symbol data in terms of the time after modulation."
+			::=  { measCurrentTmcc 12 }
+
+btsModulationLayerC OBJECT-TYPE
+			SYNTAX INTEGER { dqpsk(0), qpsk(1), mod16qam(2), mod64qam(3), notused(4) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Each Hierarquichal Layer is composed of a number of segments. Each segment is composed by a group of sub-carriers. This parameter configure the modulation standard for the data sub-carriers for each Layer."
+			::=  { measCurrentTmcc 13 }
+
+btsNumberOfSegmentsLayerC OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Number of segments for each Hierarquical Layer. The sum of the number of segments for all Layers must be 13."
+			::=  { measCurrentTmcc 14 }
+
+btsCodeRateLayerC OBJECT-TYPE
+			SYNTAX INTEGER { fec1over2(0), fec2over3(1), fec3over4(2), fec5over6(3), fec7over8(4), notused(5) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Each Hierarquichal Layer deploys a convolutional encoder block for forward error correction. This parameter configure the code rate for each Layer. The code rate is formed by a ratio: aNumber of bits Input / Numbers of bits Outputa. The ratio 1/2 provides the higher transmission robustness with the lowest payload date rate. The ratio 7/8 provides the lowest transmission robustness with the highest payload data rate."
+			::=  { measCurrentTmcc 15 }
+
+btsTimeInterleavingLengthLayerC OBJECT-TYPE
+			SYNTAX INTEGER { tm0(0), tm1(1), tm2(2), tm3(3), notused(4) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Time interleaving is intended to ensure improved the robustness against fading interference by randomizing symbol data in terms of the time after modulation."
+			::=  { measCurrentTmcc 16 }
+
+equipmentInfo OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indication that equipment is operating in SFN mode."
+			::=  { measEquipmentParameters 1 }
+
+staticDelayFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indication that Static Delay information regarding on SFN is present on the BTS."
+			::=  { measEquipmentParameters 2 }
+
+timeOffset OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"SFN Time Offset for the Local Transmitter, according to its ID in the network, as specified in the NSI at IIP within the BTS.(Apply Mask 0,0000)"
+			::=  { measEquipmentParameters 3 }
+
+internalGpsLocked OBJECT-TYPE
+			SYNTAX INTEGER { unlocked(0), locked(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Status of Universal Time Counter (UTC) obtained from GPS network. It can take some minutes to lock after startup or antenna connection."
+			::=  { measInternalGpsConf 1 }
+
+internal1ppsLocked OBJECT-TYPE
+			SYNTAX INTEGER { unlocked(0), locked(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Status of 1 Pulse Per Second (1PPS) obtained from GPS network. Check antenna connection in case of persistent unlock status."
+			::=  { measInternalGpsConf 2 }
+
+internalGpsConnected OBJECT-TYPE
+			SYNTAX INTEGER { notconnected(0), connected(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows whether the optional internal GPS is present."
+			::=  { measInternalGpsConf 3 }
+
+internalGpsDate OBJECT-TYPE
+			SYNTAX INTEGER (0..2147483646)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Date from GPS Module."
+			::=  { measInternalGpsConf 4 }
+
+internalGpsHour OBJECT-TYPE
+			SYNTAX INTEGER (0..2147483646)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Time from GPS Module."
+			::=  { measInternalGpsConf 5 }
+
+internalGpsSatFallowing OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the amount of satellite traced."
+			::=  { measInternalGpsConf 6 }
+
+internalGpsSnr01 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 01."
+			::=  { measInternalGpsSnr 1 }
+
+internalGpsSnr02 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 02."
+			::=  { measInternalGpsSnr 2 }
+
+internalGpsSnr03 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 03."
+			::=  { measInternalGpsSnr 3 }
+
+internalGpsSnr04 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 04."
+			::=  { measInternalGpsSnr 4 }
+
+internalGpsSnr05 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 05."
+			::=  { measInternalGpsSnr 5 }
+
+internalGpsSnr06 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 06."
+			::=  { measInternalGpsSnr 6 }
+
+internalGpsSnr07 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 07."
+			::=  { measInternalGpsSnr 7 }
+
+internalGpsSnr08 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 08."
+			::=  { measInternalGpsSnr 8 }
+
+internalGpsSnr09 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 09."
+			::=  { measInternalGpsSnr 9 }
+
+internalGpsSnr10 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 10."
+			::=  { measInternalGpsSnr 10 }
+
+internalGpsSnr11 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 11."
+			::=  { measInternalGpsSnr 11 }
+
+internalGpsSnr12 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 12."
+			::=  { measInternalGpsSnr 12 }
+
+internalGpsSnr13 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 13."
+			::=  { measInternalGpsSnr 13 }
+
+internalGpsSnr14 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 14."
+			::=  { measInternalGpsSnr 14 }
+
+internalGpsSnr15 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 15."
+			::=  { measInternalGpsSnr 15 }
+
+internalGpsSnr16 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Signal-to-Noise Ratio from Satellite 16."
+			::=  { measInternalGpsSnr 16 }
+
+ocxoLockStatus OBJECT-TYPE
+			SYNTAX INTEGER { unlocked(0), locked(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Oven Controled Crystal Oscillator (OCXO) lock status. Reports if the OCXO is phase locked to any possible input reference."
+			::=  { measOscillatorsTimeBase 1 }
+
+intGpsStatus OBJECT-TYPE
+			SYNTAX INTEGER { notpresent(0), unknownsignal(1), present(2), outofrange(3) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows PRESENT if the GPS signal was detect and working correctly. If NO SIGNAL or UNKOWN SIGNAL, the GPS is not connected or unlocked. Case OUT OF RANGE, GPS is not working properly."
+			::=  { measOscillatorsTimeBase 2 }
+
+extPpsStatus OBJECT-TYPE
+			SYNTAX INTEGER { notpresent(0), unknownsignal(1), present(2), outofrange(3) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows PRESENT if the EXT. PPS signal was detect and working correctly. If NO SIGNAL or UNKOWN SIGNAL, the EXT. PPS is missing or electrically incompatible. Case OUT OF RANGE, EXT. PPS is not working properly."
+			::=  { measOscillatorsTimeBase 3 }
+
+ext10mStatus OBJECT-TYPE
+			SYNTAX INTEGER { notpresent(0), unknownsignal(1), present(2), outofrange(3) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows PRESENT if the EXT. 10M signal was detect and working correctly. If NO SIGNAL or UNKOWN SIGNAL, the EXT. 10M is missing or electrically incompatible. Case OUT OF RANGE, EXT. 10M is not working properly."
+			::=  { measOscillatorsTimeBase 4 }
+
+curBtsStatus OBJECT-TYPE
+			SYNTAX INTEGER { notpresent(0), unknownsignal(1), present(2), outofrange(3) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows PRESENT if the BTS Sync. signaling was detect and working correctly. If NO SIGNAL or UNKOWN SIGNAL, the BTS Sync. is missing or incompatible (TS input). Case OUT OF RANGE, BTS Sync. is not working properly (excessive jitter)."
+			::=  { measOscillatorsTimeBase 5 }
+
+currentOcxoFrequencySetting OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Current value of the OCXO Error Frequency Control (EFC), range comprised between 0 (0V around -1,5 ppm or -15 Hz) and 262143 (3.3V around +1,5 ppm or +15 Hz)."
+			::=  { measOscillatorsTimeBase 6 }
+
+lastOcxoFrequencySetting OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Last EFC value depending on the current priority selection. If LOCKED in some valid input or in HOLD MODE, it shows the last EFC value configured. If in USER CAL MODE (free run), it shows the USER_CAL value. Its  range is comprised between 0 (0V around -1,5 ppm or -15 Hz) and 262143 (3.3V around +1,5 ppm or +15 Hz)."
+			::=  { measOscillatorsTimeBase 7 }
+
+errorFrequency OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Instantaneous Frequency Error between Internal 1 PPS (generated from internal OCXO Clock) and the 1 PPS obtained from current External Reference."
+			::=  { measOscillatorsTimeBase 8 }
+
+errorPhase OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the Instantaneous Phase Error between Internal 1 PPS (generated from internal OCXO Clock) and the 1 PPS obtained from current External Reference."
+			::=  { measOscillatorsTimeBase 9 }
+
+timeLock OBJECT-TYPE
+			SYNTAX INTEGER (0..2147483646)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Time counting since the beginning of the phase adjustment process."
+			::=  { measOscillatorsTimeBase 10 }
+
+dayLock OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Day counting since the beginning of the phase adjustment process."
+			::=  { measOscillatorsTimeBase 11 }
+
+programmedPower OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows which RF Power Output has been programmed.(Apply Mask 0,00)"
+			::=  { measPower 1 }
+
+forwardPower OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Measured of RF total forward power at mask filter output.(Apply Mask 0,00)"
+			::=  { measPower 2 }
+
+forwardPowerSetupPower OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Forward RF power measured at output mask filter.(Apply Mask 0,00)"
+			::=  { setupPower 1 }
+
+reflectedPower OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Measured of RF total reflected power at mask filter output.(Apply Mask 0,00)"
+			::=  { measPower 3 }
+
+forwardPowerSensorVoltage OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Detected voltage on forward power sensor output.(Apply Mask 0,00)"
+			::=  { measPower 4 }
+
+reflectedPowerSensorVoltage OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Detected voltage on reflected power sensor output.(Apply Mask 0,00)"
+			::=  { measPower 5 }
+
+alcVoltage OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Automatic Level Control (ALC) voltage. This voltage control a Variable Gain Amplifier (VGA) and controls the output power.(Apply Mask 0,00)"
+			::=  { measPower 6 }
+
+paCurrent OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Current consumption of Power Amplifier.(Apply Mask 0,00)"
+			::=  { measPowerAmplifier 1 }
+
+paTemperature OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Temperature on PA board next to Power Transistor. (Apply Mask 0,00)"
+			::=  { measPowerAmplifier 2 }
+
+paFanRotation OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Power Amplifier Fan PWM control."
+			::=  { measPowerAmplifier 3 }
+
+satelliteTunerStatus OBJECT-TYPE
+			SYNTAX INTEGER { unlocked(0), locked(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Locked / Unlocked: Indicates whether the receiver has detected and synchronized the DVB-S/S2 signal for current configuration."
+			::=  { measSatelliteTuner 1 }
+
+satelliteTunerSnr OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Monitors the C/N (carrier to noise) ratio in dB.(Apply Mask 0,00)"
+			::=  { measSatelliteTuner 2 }
+
+measSatelliteTunerRxLevel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the received input Level in dBm for the Satellite Tuner.(Apply Mask 0,00)"
+			::=  { measSatelliteTuner 3 }
+
+satelliteTunerPer OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Packet Error Rate (PER) at satellite receiver."
+			::=  { measSatelliteTuner 4 }
+
+satelliteTunerBer OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Bit Error Rate (BER) at satellite receiver."
+			::=  { measSatelliteTuner 5 }
+
+satelliteTunerModulation OBJECT-TYPE
+			SYNTAX INTEGER { qpsk(0), m8psk(1), m16apsk(2), m32apsk1(3), m8apskl(4), m16apskl(5), m32apskl(6), m32apskl2(7), none(8) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Detected Modulation of the DVB-S/S2 signal."
+			::=  { measSatelliteTuner 6 }
+
+satelliteTunerCoderate OBJECT-TYPE
+			SYNTAX INTEGER { cr1over2(0), cr2over3(1), cr3over4(2), cr4over5(3), cr5over6(4), cr8over9(5), cr9over10(6), cr1over3(7), cr1over4(8), cr2over5(9), cr3over5(10), cr13over45(11), cr9over20(12), cr8over15(13), cr11over20(14), cr5over9(15), cr26over45(16), cr28over45(17), cr23over36(18), cr25over36(19), cr32over45(20), cr13over18(21), cr11over15(22), cr7over9(23), cr77over90(24), cr6over7(25), cr7over8(26), none(27) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Detected Code Rate of the DVB-S/S2."
+			::=  { measSatelliteTuner 7 }
+
+ppsInput OBJECT-TYPE
+			SYNTAX INTEGER { notpresent(0), present(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Status of the 1 Pulse Per Second (1PPS) reference for the internal time base."
+			::=  { measSfnParameters 1 }
+
+sfnInfo OBJECT-TYPE
+			SYNTAX INTEGER { notpresent(0), present(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Status of the SFN information (NSI) in the IIP within the BTS."
+			::=  { measSfnParameters 2 }
+
+btsAlignment OBJECT-TYPE
+			SYNTAX INTEGER { none(0), tsp(1), clk(2), tspclk(3) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates BTS Alignment. When TSP and Clock alignment is achieved, it means that the equipment is perfectly synchronized with the Network. When just TSP alignment is informed, it means that synchronization still holds but slight jitter (wander) is present (generally due to momentary lost of time base reference)."
+			::=  { measSfnParameters 3 }
+
+timeStamp OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Time Stamp value contained within the incoming BTS. The Time Stamp is the value of a counter incremented by a 10 MHz clock which is reset every 1 second. Therefore, this counter varies from 0 to 9,999,999 and it it stamped by the ISDB-T multiplexer at every even frame and inserted into the NSI field in IIP.(Apply Mask 0,0000)"
+			::=  { measSfnParameters 4 }
+
+maximumDelay OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Maximum Delay value contained within the incoming BTS. This value specifies the time instant, relative to the 1PPS network reference, that all equipments should transmit simultaneously the same signal. Since the complete transmitter has a processing delay, the delay promoted by the SFN buffer will be the difference of the Maximum Delay and the Processing delay. Formula: SFN_BUFFER_DELAY = MAXIMUM_DELAY - PROCESSING_DELAY(Apply Mask 0,0000)"
+			::=  { measSfnParameters 5 }
+
+networkDelay OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Path Delay (or Network Delay) is dynamically calculated subtracting the incoming Time Stamp present in the BTS by the Local Time Stamp counter (from local time base synchronized via 1PPS with the network).  PATH_DELAY = MOD(BTS_TIME_STAMP - LOCAL_TIME_STAMP, 10000000), where MOD(x,y) represents a modulus operation.(Apply Mask 0,0000)"
+			::=  { measSfnParameters 6 }
+
+localDelay OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"This is the value of the additional Local Buffer Delay in order to meet, jointly with Processing Delay, the specified Maximum Delay.(Apply Mask 0,0000)"
+			::=  { measSfnParameters 7 }
+
+processingDelay OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"This is the characteristic Modulator Processing Delay. This parameter varies according to the TMCC configuration.(Apply Mask 0,0000)"
+			::=  { measSfnParameters 8 }
+
+btsBufferUtilization OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicated the Buffer utilization to reduce the BTS jitter."
+			::=  { btsFifo 1 }
+
+sfnStatus OBJECT-TYPE
+			SYNTAX INTEGER { sfnoff(0), ocxounlocked(1), streamerror(2), nsierror(3), maxdelayerror(4), sfnstaticon(5), sfndynamicon(6) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Show the Single Frequency Network (SFN) Status. Possible status are SFN OFF, OCXO NOT LOCKED (no PPS reference), INPUT STREAM ERROR (sync loss), Network Synchronization Information (NSI) ERROR (invalid or absence of SFN Info), MAXIMUM DELAY ERROR (occurs when the Path Delay plus the Processing Delay exceds the maximum Network Delay), STATIC MODE ON and DYNAMIC MODE ON."
+			::=  { sfnConfiguration 1 }
+
+merCurrentDemodulation OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Current MER value for all layers (all modulation schemes).(Apply Mask 0,00)"
+			::=  { demodulation 1 }
+
+merCurrent OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Current MER value for all layers (all modulation schemes).(Apply Mask 0,00)"
+			::=  { measSignal 1 }
+
+merBpsk OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the MER for BPSK Modulation.(Apply Mask 0,00)"
+			::=  { measSignal 2 }
+
+merDqpsk OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the MER for DQPSK Modulation.(Apply Mask 0,00)"
+			::=  { measSignal 3 }
+
+merQpsk OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the MER for QPSK Modulation.(Apply Mask 0,00)"
+			::=  { measSignal 4 }
+
+mer16qam OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the MER for 16QAM Modulation.(Apply Mask 0,00)"
+			::=  { measSignal 5 }
+
+mer64qam OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the MER for 64QAM Modulation.(Apply Mask 0,00)"
+			::=  { measSignal 6 }
+
+psdImdLow OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Intermodulation (shoulder attenuation) [dB] @ -3.15 [MHz] on before or after filter sample.(Apply Mask 0,00)"
+			::=  { measSignal 7 }
+
+psdImdHigh OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Intermodulation (shoulder attenuation) [dB] @ +3.15 [MHz] on before or after filter sample.(Apply Mask 0,00)"
+			::=  { measSignal 8 }
+
+nitStatus OBJECT-TYPE
+			SYNTAX INTEGER { notpresent(0), present(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates whether the NIT (Network Information Table) is present in the current TS/BTS selection that feeds the transmitter."
+			::=  { measVirtualPhysicalChannel 1 }
+
+originalVirtualChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates the Original Virtual Channel content at NIT."
+			::=  { measVirtualPhysicalChannel 2 }
+
+originalPhysicalChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates the Original Physical Channel content at NIT."
+			::=  { measVirtualPhysicalChannel 3 }
+
+transmittedVirtualChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the current transmitted Virtual Channel value."
+			::=  { measVirtualPhysicalChannel 4 }
+
+transmittedPhysicalChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the current transmitted Physical Channel value."
+			::=  { measVirtualPhysicalChannel 5 }
+
+camServiceSidPid01 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 1. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { service1 1 }
+
+camServiceSidPid02 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 2. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { service2 1 }
+
+camServiceSidPid03 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 3. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { service3 1 }
+
+camServiceSidPid04 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 4. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { service4 1 }
+
+camServiceSidPid05 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 5. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { service5 1 }
+
+camServiceSidPid06 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 6. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { service6 1 }
+
+camServiceSidPid07 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 7. It appears in the same order of the service descriptors in the SDT table."
+			::=  { service7 1 }
+
+camServiceSidPid08 OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 8. It appears in the same order of the service descriptors in the SDT table."
+			::=  { service8 1 }
+
+camServiceNameProg1 OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { service1 2 }
+
+camServiceNameProg2 OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { service2 2 }
+
+camServiceNameProg3 OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { service3 2 }
+
+camServiceNameProg4 OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { service4 2 }
+
+camServiceNameProg5 OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { service5 2 }
+
+camServiceNameProg6 OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { service6 2 }
+
+camServiceNameProg7 OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { service7 2 }
+
+camServiceNameProg8 OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { service8 2 }
+
+containerVersion OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates the Container Version."
+			::=  { softwareHardwareVersion 1 }
+
+fpgaFirmwareVersion OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates the FPGA Version."
+			::=  { softwareHardwareVersion 2 }
+
+cpuFirmwareVersion OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates the CPU Version."
+			::=  { softwareHardwareVersion 3 }
+
+displayFirmwareVersion OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates the Front Version."
+			::=  { softwareHardwareVersion 4 }
+
+camVersion OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates the CAM Version."
+			::=  { softwareHardwareVersion 5 }
+
+cimVersion OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates the CIM Version."
+			::=  { softwareHardwareVersion 6 }
+
+cipDescription OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Stands for Circuito Impresso which means the Printed Circuit Board (PCB) identification. Example: CIP9876B is PCB ID 9876 revision B."
+			::=  { softwareHardwareVersion 7 }
+
+calibrationLockPid OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Indicates that the PID Controller is locked when the difference between the Programmed Power and the Output Power is less than 2%."
+			::=  { measPower 7 }
+
+fdbLevelBeforeFilter OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"RF Level at the selected Before or After Filter Feedback Input. Low values (around 20%) indicates signal absence while high values (greater than 70%) indicates acceptable input level."
+			::=  { powerSpectrumDensity 1 }
+
+lpcProgress OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Linear Pre-Correction (LPC) Execution Progress. When ready, shows 100% progress."
+			::=  { linearPreCorrection 1 }
+
+lpcStatus OBJECT-TYPE
+			SYNTAX INTEGER { off(0), capturing(1), analysing(2), processing(3), writing(4), runned(5), error(6), userloaded(7), factoryloaded(8), usersaved(9), factorysaved(10), monitoring(11), checkfeedback(12), checkingpower(13) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Liner Pre-Correction (LPC) Execution Status."
+			::=  { linearPreCorrection 2 }
+
+dpdProgress OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Non Linear Pre-Correction (NLPC) Execution Progress. When ready or monitoring, shows 100% progress."
+			::=  { nonLinearPreCorrection 1 }
+
+dpdStatus OBJECT-TYPE
+			SYNTAX INTEGER { off(0), capturing(1), analysing(2), processing(3), writing(4), runned(5), error(6), userloaded(7), factoryloaded(8), usersaved(9), factorysaved(10), monitoring(11), checkfeedback(12), checkingpower(13) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Non Linear Pre-Correction (NLPC) Execution Status."
+			::=  { nonLinearPreCorrection 2 }
+
+feedbackPaprDpd OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PAPR of the feedback signal.(Apply Mask 0,0)"
+			::=  { nonLinearPreCorrection 3 }
+
+dpdScale OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					""
+			::=  { nonLinearPreCorrection 4 }
+
+measTunerTerrestrialChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Show the receiving channel for the terrestrial tuner."
+			::=  { measTerrestrialTuner 1 }
+
+measTerrestialTunerStatus OBJECT-TYPE
+			SYNTAX INTEGER { unlocked(0), locked(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Locked / Unlocked: Indicates whether the receiver has detected and synchronized the DVB/S2 signal for current channel."
+			::=  { measTerrestrialTuner 2 }
+
+measTerrestialTunerSignalNoise OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Monitors the C/N (carrier to noise) ratio in dB.(Apply Mask 0,00)"
+			::=  { measTerrestrialTuner 3 }
+
+measTerrestialTunerRxLevel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Shows the received input Level in dBm for the Terrestrial Tuner.(Apply Mask 0,00)"
+			::=  { measTerrestrialTuner 4 }
+
+measTerrestialTunerBerA OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Bit Error Rate (BER) at Terrestrial Tuner Receiver at Layer A ."
+			::=  { measTerrestrialTuner 5 }
+
+measTerrestialTunerBerB OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Bit Error Rate (BER) at Terrestrial Tuner receiver at Layer B."
+			::=  { measTerrestrialTuner 6 }
+
+measTerrestialTunerBerC OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Bit Error Rate (BER) at Terrestrial Tuner receiver at Layer C."
+			::=  { measTerrestrialTuner 7 }
+
+measManagementMacAddr OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Management MAC Address."
+			::=  { ethManagement 2 }
+
+measStreamMacAddr OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Stream TS/IP MAC Address "
+			::=  { ethStream 1 }
+
+measEquipmentId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Selected Network ID of this Equipment, ranging from 1 to 4095."
+			::=  { measEquipmentParameters 4 }
+
+measEquipmentSerialNumber OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Serial number of this equipment."
+			::=  { softwareHardwareVersion 8 }
+
+measTunerNetworkId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Received Network ID from the Terrestrial Tuner TS input."
+			::=  { measTerrestrialTuner 8 }
+
+measTunerTerrestrialEwbsFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Status of the Remote Emergency Flag from the Terrestrial Tuner TS input. It informs the EWBS flag status at TMCC."
+			::=  { measTerrestrialTuner 9 }
+
+measTunerSatPresent OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Informs whether the Optional Satellite Tuner is connected."
+			::=  { measSatelliteTuner 8 }
+
+measTunerSatFreqError OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Detected frequency error in satellite reception."
+			::=  { measSatelliteTuner 9 }
+
+measTunerTerPresent OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Informs whether the Optional Terrestrial Tuner is connected."
+			::=  { measTerrestrialTuner 10 }
+
+receivedTunerNetworkId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Received Network ID from the Terrestrial Tuner TS input."
+			::=  { setupTerrestrialTuner 1 }
+
+setTunerTerrestrialEwbsFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Status of the Remote Emergency Flag from the Terrestrial Tuner TS input. It informs the EWBS flag status at TMCC."
+			::=  { setupTerrestrialTuner 2 }
+
+bissService1ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 1. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { setupBissService1 1 }
+
+bissService2ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 2. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { setupBissService2 1 }
+
+bissService3ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 3. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { setupBissService3 1 }
+
+bissService4ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 4. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { setupBissService4 1 }
+
+bissService5ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 5. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { setupBissService5 1 }
+
+bissService6ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 6. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { setupBissService6 1 }
+
+bissService7ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 7. It appears in the same order of the service descriptors in the SDT table."
+			::=  { setupBissService7 1 }
+
+bissService8ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 8. It appears in the same order of the service descriptors in the SDT table."
+			::=  { setupBissService8 1 }
+
+bissService9ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 9. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { setupBissService9 1 }
+
+bissService10ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 10. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { setupBissService10 1 }
+
+bissService11ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 11. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { setupBissService11 1 }
+
+bissService12ProgId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"PID number of the PMT related to the Service 12. It appears in the same order of the service descriptors in the SDT Table."
+			::=  { setupBissService12 1 }
+
+bissService1Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService1 2 }
+
+bissService2Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService2 2 }
+
+bissService3Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService3 2 }
+
+bissService4Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService4 2 }
+
+bissService5Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService5 2 }
+
+bissService6Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService6 2 }
+
+bissService7Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService7 2 }
+
+bissService8Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService8 2 }
+
+bissService9Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService9 2 }
+
+bissService10Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService10 2 }
+
+bissService11Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService11 2 }
+
+bissService12Name OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Service Name as described in the SDT Table."
+			::=  { setupBissService12 2 }
+
+bissLicenseFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Identifies if the BISS optional is enabled."
+			::=  { equipmentLicensesEnabled 1 }
+
+tsAnalyserLicenseFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Identifies if the TS Analyzer optional is enabled."
+			::=  { equipmentLicensesEnabled 2 }
+
+tsoipBidirectionalLicenseFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Identifies if the TSoIP output optional is enabled."
+			::=  { equipmentLicensesEnabled 3 }
+
+nagravisionLicenseFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Identifies if the Nagravision optional is enabled."
+			::=  { equipmentLicensesEnabled 4 }
+
+verimatrixLicenseFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Identifies if the Verimatrix optional is enabled."
+			::=  { equipmentLicensesEnabled 5 }
+
+irdetoLicenseFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Identifies if the Irdeto optional is enabled."
+			::=  { equipmentLicensesEnabled 6 }
+
+conaxLicenseFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Identifies if the Conax optional is enabled."
+			::=  { equipmentLicensesEnabled 7 }
+
+currentAlarmStatus OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Current Alarm Status. Indicates if there is any alarm on."
+			::=  { snmpAlarmStatus 1 }
+
+pastAlarmStatus OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION 
+					"Past Alarm Status. Indicates if there was any alarm on."
+			::=  { snmpAlarmStatus 2 }
+
+resetEquipment OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Reset equipment"
+			::=  { remoteReset 1 }
+
+asi1BtsDecompressor OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable BTS Decompressor."
+			::=  { btsDecompressorAsi1 1 }
+
+asi1OriginalPcrRecovery OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Recovery the PCR Original Value."
+			::=  { btsDecompressorAsi1 2 }
+
+asi1VerifyOpcrFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Verify the OPCR Flag."
+			::=  { btsDecompressorAsi1 3 }
+
+asi1RemapValidNullPackets OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Remap the Valid the Null Packets belongs to Hierarchical Layers."
+			::=  { btsDecompressorAsi1 4 }
+
+asi1KeepPayloadNullPacks OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Keep the Payload the Null Packets belongs to Hierarchical Layers."
+			::=  { btsDecompressorAsi1 5 }
+
+asi1NullPacksContCounters OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Continuity Counter Value that belongs to Hierarchical Layers."
+			::=  { btsDecompressorAsi1 6 }
+
+asi1NullPacksPayload OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Transport Stream Payload to Null Packets that belongs to Hierarchical Layers."
+			::=  { btsDecompressorAsi1 7 }
+
+asi1NullPacksValidPid OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Packet Identifiers (PID) to Null Packets that belongs to Hierarchical Layers."
+			::=  { btsDecompressorAsi1 8 }
+
+asi2BtsDecompressor OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable BTS Decompressor."
+			::=  { btsDecompressorAsi2 1 }
+
+asi2OriginalPcrRecovery OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Recovery the PCR Original Value."
+			::=  { btsDecompressorAsi2 2 }
+
+asi2VerifyOpcrFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Verify the OPCR Flag."
+			::=  { btsDecompressorAsi2 3 }
+
+asi2RemapValidNullPackets OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Remap the Valid the Null Packets belongs to Hierarchical Layers."
+			::=  { btsDecompressorAsi2 4 }
+
+asi2KeepPayloadNullPacks OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Keep the Payload the Null Packets belongs to Hierarchical Layers."
+			::=  { btsDecompressorAsi2 5 }
+
+asi2NullPacksContCounters OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Continuity Counter Value that belongs to Hierarchical Layers."
+			::=  { btsDecompressorAsi2 6 }
+
+asi2NullPacksPayload OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Transport Stream Payload to Null Packets that belongs to Hierarchical Layers."
+			::=  { btsDecompressorAsi2 7 }
+
+asi2NullPacksValidPid OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Packet Identifiers (PID) to Null Packets that belongs to Hierarchical Layers."
+			::=  { btsDecompressorAsi2 8 }
+
+ethBtsDecompressor OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable BTS Decompressor."
+			::=  { btsDecompressorEth 1 }
+
+ethOriginalPcrRecovery OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Recovery the PCR Original Value."
+			::=  { btsDecompressorEth 2 }
+
+ethVerifyOpcrFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Verify the OPCR Flag."
+			::=  { btsDecompressorEth 3 }
+
+ethRemapValidNullPackets OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Remap the Valid the Null Packets belongs to Hierarchical Layers."
+			::=  { btsDecompressorEth 4 }
+
+ethKeepPayloadNullPacks OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Keep the Payload the Null Packets belongs to Hierarchical Layers."
+			::=  { btsDecompressorEth 5 }
+
+ethNullPacksContCounters OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Continuity Counter Value that belongs to Hierarchical Layers."
+			::=  { btsDecompressorEth 6 }
+
+ethNullPacksPayload OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Transport Stream Payload to Null Packets that belongs to Hierarchical Layers."
+			::=  { btsDecompressorEth 7 }
+
+ethNullPacksValidPid OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Packet Identifiers (PID) to Null Packets that belongs to Hierarchical Layers."
+			::=  { btsDecompressorEth 8 }
+
+tunerBtsDecompressor OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable BTS Decompressor."
+			::=  { btsDecompressorTuner 1 }
+
+tunerOriginalPcrRecovery OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Recovery the PCR Original Value."
+			::=  { btsDecompressorTuner 2 }
+
+tunerVerifyOpcrFlag OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Verify the OPCR Flag."
+			::=  { btsDecompressorTuner 3 }
+
+tunerRemapValidNullPackets OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Remap the Valid the Null Packets belongs to Hierarchical Layers."
+			::=  { btsDecompressorTuner 4 }
+
+tunerKeepPayloadNullPacks OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Keep the Payload the Null Packets belongs to Hierarchical Layers."
+			::=  { btsDecompressorTuner 5 }
+
+tunerNullPacksContCounters OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Continuity Counter Value that belongs to Hierarchical Layers."
+			::=  { btsDecompressorTuner 6 }
+
+tunerNullPacksPayload OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Transport Stream Payload to Null Packets that belongs to Hierarchical Layers."
+			::=  { btsDecompressorTuner 7 }
+
+tunerNullPacksValidPid OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the Packet Identifiers (PID) to Null Packets that belongs to Hierarchical Layers."
+			::=  { btsDecompressorTuner 8 }
+
+managementIpAddress OBJECT-TYPE
+			SYNTAX IpAddress
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Management Ethernet Control Port IP Address v4 (32-bit)"
+			::=  { ethManagement 3 }
+
+managementGateway OBJECT-TYPE
+			SYNTAX IpAddress
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Management Ethernet Control Port Default Gateway"
+			::=  { ethManagement 4 }
+
+managementNetworkMask OBJECT-TYPE
+			SYNTAX IpAddress
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Management Ethernet Control Port Sub Network Mask"
+			::=  { ethManagement 5 }
+
+managementProxyEnable OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Management Ethernet Control Port Proxy Enable. If your network uses a proxy, turn on this option to use the specified proxy IP."
+			::=  { ethManagement 6 }
+
+managementProxyAddress OBJECT-TYPE
+			SYNTAX IpAddress
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Management Ethernet Control Port Proxy IP Address v4 (32-bit)"
+			::=  { ethManagement 7 }
+
+managementProxyPort OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Management Ethernet Control Port Proxy Port Number"
+			::=  { ethManagement 8 }
+
+streamRxIpAddress OBJECT-TYPE
+			SYNTAX IpAddress
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configuration of the IP destination address (TS/IP input)"
+			::=  { ethStream 2 }
+
+streamRxUdpPort OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configuration of the Port destination address (TS/IP input)"
+			::=  { ethStream 3 }
+
+streamProtocol OBJECT-TYPE
+			SYNTAX INTEGER { udp(0), rtp(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Protocol: RTP/IP or UDP/IP"
+			::=  { ethStream 4 }
+
+streamHostIpAddr OBJECT-TYPE
+			SYNTAX IpAddress
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Stream Host Ethernet Control Port IP Address v4 (4 octets)"
+			::=  { ethStream 5 }
+
+streamTxIpAddress OBJECT-TYPE
+			SYNTAX IpAddress
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configuration of the IP destination address (TS/IP output)"
+			::=  { ethStream 6 }
+
+streamTxPort OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configuration of the Port destination address (TS/IP output)"
+			::=  { ethStream 7 }
+
+streamTsTxPackets OBJECT-TYPE
+			SYNTAX INTEGER { tsp1(0), tsp2(1), tsp3(2), tsp4(3), tsp5(4), tsp6(5), tsp7(6) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Number os Transport Stream Packets (TSP) per datagram IP. Choose 1 TSP/Datagram IP to reduce packet jitter at the cost of around +40% rate increasement due to overhead (recommended for SFN). Choose 7 TSPs/Datagram IP to reduce overhead (add around +2% rate increasement) although more packet jitter might occur (recommended for MFN)."
+			::=  { ethStream 8 }
+
+enableModulation OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or disable modulation. When modulation is disabled, only one sub-carrier is present. It generates a continuous wave sinusoid signal. This can be used for measuring carrier frequency."
+			::=  { modulation 1 }
+
+rfOnOff OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable (on)/disable (off) RF output power."
+			::=  { remoteMuteRf 1 }
+
+programmedOutputPower OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set transmitter RF output power."
+			::=  { setupPower 2 }
+
+sfnFailOutputPower OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configure the desired percentage of RF Output Power in case of SFN Failure. For example, to reduce the RF Output Power to half in case of SFN Fail, set this control to 50% and select Reduce RF Power at Action on SFN Fail control."
+			::=  { sfnInputFifoConfig 1 }
+
+linearPreCorrectionMode OBJECT-TYPE
+			SYNTAX INTEGER { on(0), off(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Linear Pre-Correction (LPC) performs frequency response and group delay pre-equalization of the output mask filter analyzing the after filter feedback signal. Choose LPC Operation Mode between On or Off. Set Run to execute the LPC and save the Select Saved Mode right after running the LPC to save current curve  as default (Static Mode self selected). "
+			::=  { linearPreCorrection 3 }
+
+linearPreCorrectionRun OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					""
+			::=  { linearPreCorrection 4 }
+
+nonLinearPreCorrectionMemory OBJECT-TYPE
+			SYNTAX INTEGER { memoryless(0), memory(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Non Linear Pre-Correction (NLPC) performs AM-AM and AM-PM pre-distortion of the transmitter amplifier chain analyzing the before filter feedback signal. Choose between Memory (recommended) or Memory Less algorithms for the Non Linear Pre Correction."
+			::=  { nonLinearPreCorrection 5 }
+
+nonLinearPreCorrectionMode OBJECT-TYPE
+			SYNTAX INTEGER { off(0), manual(1), adaptive(2) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set Non Linear Pre-Correction (NLPC) Operation Mode among the options Adaptive (recommended), Manual or Off. In Adaptive Mode, the NLPC runs automatically whenever necessary. In Manual Mode, a saved curve is loaded and remains fixed for any programmed power."
+			::=  { nonLinearPreCorrection 6 }
+
+nonLinearPreCorrectionRun OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Run Non Linear Pre-Correction (NLPC) when in Manual Mode."
+			::=  { nonLinearPreCorrection 7 }
+
+nonLinearPreCorrectionSaveMode OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Save current Non Linear Pre-Correction curve when in Manual Mode. "
+			::=  { nonLinearPreCorrection 8 }
+
+psu1CommAlarmMask OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or disable alarms for the Power Supply 1 (PSU 1). If ON, considers that PSU 1 is present and any alarm occurrence will be notified and logged."
+			::=  { setupAlarmsMaskPsuComm 1 }
+
+psu2CommAlarmMask OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or disable alarms for the Power Supply 2 (PSU 2). If ON, considers that PSU 2 is present and any alarm occurrence will be notified and logged."
+			::=  { setupAlarmsMaskPsuComm 2 }
+
+asi1StreamAlarmMask OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or disable a mask for triggering an alarm on the absence of a (B)TS source. Setting On, triggers the alarm when input (B)TS is not present."
+			::=  { setupAlarmsMaskActivateStream 1 }
+
+asi2StreamAlarmMask OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or disable a mask for triggering an alarm on the absence of a (B)TS source. Setting On, triggers the alarm when input (B)TS is not present."
+			::=  { setupAlarmsMaskActivateStream 2 }
+
+tsOverEthernetStreamAlarmMask OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or disable a mask for triggering an alarm on the absence of a (B)TS source. Setting On, triggers the alarm when input (B)TS is not present."
+			::=  { setupAlarmsMaskActivateStream 3 }
+
+tunerStreamAlarmMask OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or disable a mask for triggering an alarm on the absence of a (B)TS source. Setting On, triggers the alarm when input (B)TS is not present."
+			::=  { setupAlarmsMaskActivateStream 4 }
+
+startedEquipmentMask OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or disable a mask for triggering an alarm whenever equipament turns on. If ON, Self clearing alarm after initialization with automatic alarm log notification."
+			::=  { setupStartedEquipmentMask 1 }
+
+rfFilterFanAlarmMask OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or disable the Filter Fan Alarm. This is the Fan used to cool down the output mask filter in high power conditions (normally not used/disable for the LP family). "
+			::=  { setupAlarmsMaskFilterFan 1 }
+
+gpsAlarmMask OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or disable the GPS Alarm. If the optional GPS is installed, user can turn this control on to enable the alarm of GPS unlocked or active antenna failure."
+			::=  { setupAlarmsMaskRefClock 1 }
+
+ext1ppsAlarmMask OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or disable the External 1PPS Alarm. User can turn this control on to enable the alarm of invalid External 1PPS as clock reference."
+			::=  { setupAlarmsMaskRefClock 2 }
+
+descramblerFailMask OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable the Descrambler Failure Alarm."
+			::=  { descramblerFail 1 }
+
+actionOnSfnFail OBJECT-TYPE
+			SYNTAX INTEGER { notifyonly(0), reducerfpower(1), muterfpower(2) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Select the behavior of the Output RF Power in case of SFN Failure."
+			::=  { sfnInputFifoConfig 2 }
+
+casDecryptType OBJECT-TYPE
+			SYNTAX INTEGER { irdeto(0), conax(1), nagravision(2), verimatrix(3) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Selects on of the available Decrypt Types among the options: Irdeto, Conax, Nagravision or Verimatrix. Note that it is necesary to have the optional CAM installed and the respective license enabled."
+			::=  { casDecrypt 1 }
+
+camEn1 OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { service1 3 }
+
+camEn2 OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { service2 3 }
+
+camEn3 OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { service3 3 }
+
+camEn4 OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { service4 3 }
+
+camEn5 OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { service5 3 }
+
+camEn6 OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { service6 3 }
+
+camEn7 OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { service7 3 }
+
+camEn8 OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { service8 3 }
+
+clockReference1stPriority OBJECT-TYPE
+			SYNTAX INTEGER { lastcalhold(0), usercalfree(1), internalgps(2), external1pps(3), external10mhz(4), inputbts(5) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set the priority list for signal source to be used as a reference for the internal time base. All internal oscillators will be locked to that reference. When 1st priority fails, 2nd takes place. When 2nd fails, 3rd takes place. And so on..."
+			::=  { setupOscillatorsTimeBase 1 }
+
+clockReference2ndPriority OBJECT-TYPE
+			SYNTAX INTEGER { lastcalhold(0), usercalfree(1), internalgps(2), external1pps(3), external10mhz(4), inputbts(5) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set the priority list for signal source to be used as a reference for the internal time base. All internal oscillators will be locked to that reference. When 1st priority fails, 2nd takes place. When 2nd fails, 3rd takes place. And so on..."
+			::=  { setupOscillatorsTimeBase 2 }
+
+clockReference3rdPriority OBJECT-TYPE
+			SYNTAX INTEGER { lastcalhold(0), usercalfree(1), internalgps(2), external1pps(3), external10mhz(4), inputbts(5) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set the priority list for signal source to be used as a reference for the internal time base. All internal oscillators will be locked to that reference. When 1st priority fails, 2nd takes place. When 2nd fails, 3rd takes place. And so on..."
+			::=  { setupOscillatorsTimeBase 3 }
+
+clockReference4thPriority OBJECT-TYPE
+			SYNTAX INTEGER { lastcalhold(0), usercalfree(1), internalgps(2), external1pps(3), external10mhz(4), inputbts(5) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set the priority list for signal source to be used as a reference for the internal time base. All internal oscillators will be locked to that reference. When 1st priority fails, 2nd takes place. When 2nd fails, 3rd takes place. And so on..."
+			::=  { setupOscillatorsTimeBase 4 }
+
+userCal OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"The OCXO has an input pin which voltage is proportional to the oscillation frequency. This setting corresponds to this voltage and results on frequency adjustment. Standard value = 131072 (50%)."
+			::=  { setupOscillatorsTimeBase 5 }
+
+clockEnableInternal1pps OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable the Internal 1PPS output when there is no GPS or External PPS input. When the transmitter reference clock is locked to GPS or External PPS, the PPS output is automatically enabled."
+			::=  { setupOscillatorsTimeBase 6 }
+
+satelliteTunerLoFrequency OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Specifies the Local Oscillator Frequency in MHz of the satellite band converter  (ex.: 5150 MHz for C-Band or 11750 MHz for Ku-Band)."
+			::=  { setupSatelliteTuner 1 }
+
+satelliteTunerChannelFrequency OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Specifies the Transponder Channel Frequency in MHz (ex.: 3994 MHz at C-Band or 13025 MHz for Ku-Band)."
+			::=  { setupSatelliteTuner 2 }
+
+satelliteTunerSymbolRate OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Specifies the Symbol Rate in MSps (Mega Symbols per second) used by the DVB-S/S2 signal (ex.: 7.50 MSps). (Apply Mask 0,000)"
+			::=  { setupSatelliteTuner 3 }
+
+dvbsStandard OBJECT-TYPE
+			SYNTAX INTEGER { dvbnegatives(0), dvbnegatives2(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Specifies the Demodulation Standard as DVB-S or DVB-S2."
+			::=  { setupSatelliteTuner 4 }
+
+satelliteTunerPolarity OBJECT-TYPE
+			SYNTAX INTEGER { v13v(0), h18v(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Specifies the LNB power supply as vertical (+13V) or horizontal (+18V)."
+			::=  { setupSatelliteTuner 5 }
+
+lnbSupply OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Turns the LNB power supply On or OFF."
+			::=  { setupSatelliteTuner 6 }
+
+settingDescramblerFail OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Force a Stream Sync loss for the CAM when it fails to Descramble the input received. If another Stream input is available, the transmitter switches to the next setted priority."
+			::=  { setupSatelliteTuner 7 }
+
+automaticLevelControl OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Automatic Level Control is the closed loop control system that controls a variable gain amplifier based on the measured output power (from directional coupler) and the user output power setting."
+			::=  { setupTransmitter 1 }
+
+muteOnStreamLoss OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"On: mute RF output whenever input stream is lost or out of sync. Off: Do not mute RF output even if input stream is lost or out of sync."
+			::=  { setupTransmitter 2 }
+
+externalRfMuteCommand OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable External RF Mute Command."
+			::=  { setupTransmitter 3 }
+
+bts1stPriority OBJECT-TYPE
+			SYNTAX INTEGER { pn(0), asi1(1), asi2(2), tuner(3), tsoverethernet(4) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set a priority list for the input (B)TS signal source. When 1st priority fails, 2nd takes place. When 2nd fails, 3rd takes place. And so on..."
+			::=  { setupTsInput 1 }
+
+bts2ndPriority OBJECT-TYPE
+			SYNTAX INTEGER { pn(0), asi1(1), asi2(2), tuner(3), tsoverethernet(4) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set a priority list for the input (B)TS signal source. When 1st priority fails, 2nd takes place. When 2nd fails, 3rd takes place. And so on..."
+			::=  { setupTsInput 2 }
+
+bts3rdPriority OBJECT-TYPE
+			SYNTAX INTEGER { pn(0), asi1(1), asi2(2), tuner(3), tsoverethernet(4) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set a priority list for the input (B)TS signal source. When 1st priority fails, 2nd takes place. When 2nd fails, 3rd takes place. And so on..."
+			::=  { setupTsInput 3 }
+
+bts4thPriority OBJECT-TYPE
+			SYNTAX INTEGER { pn(0), asi1(1), asi2(2), tuner(3), tsoverethernet(4) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set a priority list for the input (B)TS signal source. When 1st priority fails, 2nd takes place. When 2nd fails, 3rd takes place. And so on..."
+			::=  { setupTsInput 4 }
+
+btsPriorityMode OBJECT-TYPE
+			SYNTAX INTEGER { holdon(0), holdoff(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"If Hold  On keep the last stable priority even if a higher priority input turns correct."
+			::=  { setupTsInput 5 }
+
+asiOutput OBJECT-TYPE
+			SYNTAX INTEGER { tsswitch(0), pidfilter(1), btsdecompressor(2), isdbnegativetremux(3), reedsolomon(4), asi1(5), asi2(6), tuner(7), tsoip(8), disabled(9) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Select ASI output point: TS Switch Out, PID Filter Out, TS Remultiplexer Out, ASI 1, ASI 2, Tuner, TSoIP."
+			::=  { setupTsOutput 1 }
+
+tsoipOutput OBJECT-TYPE
+			SYNTAX INTEGER { tsswitch(0), pidfilter(1), btsdecompressor(2), isdbnegativetremux(3), reedsolomon(4), asi1(5), asi2(6), tuner(7), tsoip(8), disabled(9) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Select TSoIP output point: TS Switch Out, PID Filter Out, TS Remultiplexer Out, ASI 1, ASI 2, Tuner, TSoIP."
+			::=  { setupTsOutput 2 }
+
+expectedNetworkId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Select the Expected Network ID to allow retransmission. If Expected Network ID does not match Received Network ID, the RF output Power might be disabled depending on user configuration."
+			::=  { setupTerrestrialTuner 3 }
+
+rfMuteNetworkIdMismatch OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable the RF Mute on Network ID Mismatch."
+			::=  { setupTerrestrialTuner 4 }
+
+emergencyFlagSource OBJECT-TYPE
+			SYNTAX INTEGER { remote(0), local(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Select the source for the Transmitter Emergency Flag. In Remote mode, this information comes from Terrestrial Tuner TMCC. In Manual mode, it is controlled by the Local Emergency Flag."
+			::=  { setupTerrestrialTuner 5 }
+
+localEmergencyFlagValue OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set the value of the Local Emergency Flag. It only takes effect if the Emergency Flag Source is Local, then the EWBS flag is forced on transmitted TMCC."
+			::=  { setupTerrestrialTuner 6 }
+
+pidLayerTmccInfoCfg OBJECT-TYPE
+			SYNTAX INTEGER { auto(0), manual(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Select the configuration mode of the internal Multiplexer for the Terrestrial Tuner input. In Manual mode, all configurations are set manually by the user in Multiplexer Tab. In Automatic mode, PID/Layer and TMCC are recovered from Terrestrial Tuner Transport Stream."
+			::=  { setupTerrestrialTuner 7 }
+
+tunerReset OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Performs a Hardware Reset in the Satellite Tuner. This command is self cleared after reset execution."
+			::=  { setupSatelliteTuner 8 }
+
+sfnEnable OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable the Single Frequency Network (SFN) Mode. When operating in SFN, Null Packet insertion, PCR re-stamping or any other BTS edition are forbidden in order guarantee that all transmitters modulates the same signal. Time synchronism through 1 Pulse Per Second (PPS) is mandatory."
+			::=  { sfnConfiguration 2 }
+
+localOffsetDelay OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set a Local Offset Delay. This value is added to the Local Delay obtained from the BTS. It can be adjusted from -999999.9 to 999999.9 us in steps of 100 ns. Just for test purposes, it is recommended to use only the Offset Delay available in the ISDB-T Multiplexer to perform SFN adjustments.(Apply Mask 0,0)"
+			::=  { sfnConfiguration 3 }
+
+equipmentId OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"ID of this equipment in the Network, ranging from 1 to 4095. This ID is used to get specific SFN information addressed to this equipment."
+			::=  { sfnConfiguration 4 }
+
+btsFifoMode OBJECT-TYPE
+			SYNTAX INTEGER { time(0), halffifo(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Select the Fullfilment Mode of the Internal BTS Buffer when SFN or Decompressor are enabled. Half Fifo (Recommended): wait 50% FIFO fullfillment to start (variable time). Time FIFO: wait the selected fullfilment time to start (variable fifo level)."
+			::=  { btsFifo 2 }
+
+btsFifoTime OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Select the Fullfilment Time of the Internal BTS Buffer when selected Mode is Time."
+			::=  { btsFifo 3 }
+
+date OBJECT-TYPE
+			SYNTAX INTEGER (0..2147483646)
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Date Configuration ( Timestamp )"
+			::=  { timeAndDate 1 }
+
+time OBJECT-TYPE
+			SYNTAX INTEGER (0..2147483646)
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Time Configuration ( Timestamp )"
+			::=  { timeAndDate 2 }
+
+dateTimeAuto OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable automatic Date and Time synchronization from NTP server or GPS receiver."
+			::=  { timeAndDate 3 }
+
+timeZoneOffset OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Time zone offset in hours."
+			::=  { timeAndDate 4 }
+
+asi1SettingsPhysicalChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to specify the Physical Channel descriptor for the ASI 1 incoming TS/BTS if NIT available, ranging according to adopted channelization."
+			::=  { virtualPhysicalChannelAsi1 1 }
+
+asi1SettingsOverwritePhysicalChannel OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the specified Physical Channel descriptor for the ASI 1 incoming TS/BTS if NIT available, ranging according to adopted channelization."
+			::=  { virtualPhysicalChannelAsi1 2 }
+
+asi1SettingsVirtualChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to specify the Virtual Channel descriptor for the ASI 1 incoming TS/BTS if NIT available, ranging from 1 to 99."
+			::=  { virtualPhysicalChannelAsi1 3 }
+
+asi1SettingsOverwriteVirtualChannel OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the specified Virtual Channel descriptor for the ASI 1 incoming TS/BTS if NIT available, ranging from 1 to 99."
+			::=  { virtualPhysicalChannelAsi1 4 }
+
+asi2SettingsPhysicalChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to specify the Physical Channel descriptor for the ASI 2 incoming TS/BTS if NIT available, ranging according to adopted channelization."
+			::=  { virtualPhysicalChannelAsi2 1 }
+
+asi2SettingsOverwritePhysicalChannel OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the specified Physical Channel descriptor for the ASI 2 incoming TS/BTS if NIT available, ranging according to adopted channelization."
+			::=  { virtualPhysicalChannelAsi2 2 }
+
+asi2SettingsVirtualChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to specify the Virtual Channel descriptor for the ASI 2 incoming TS/BTS if NIT available, ranging from 1 to 99."
+			::=  { virtualPhysicalChannelAsi2 3 }
+
+asi2SettingsOverwriteVirtualChannel OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the specified Virtual Channel descriptor for the ASI 2 incoming TS/BTS if NIT available, ranging from 1 to 99."
+			::=  { virtualPhysicalChannelAsi2 4 }
+
+ethSettingsPhysicalChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to specify the Physical Channel descriptor for theTS/IP incoming TS/BTS if NIT available, ranging according to adopted channelization."
+			::=  { virtualPhysicalChannelEth 1 }
+
+ethSettingsOverwritePhysicalChannel OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the specified Physical Channel descriptor for the TS/IP incoming TS/BTS if NIT available, ranging according to adopted channelization."
+			::=  { virtualPhysicalChannelEth 2 }
+
+ethSettingsVirtualChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to specify the Virtual Channel descriptor for the TS/IP incoming TS/BTS if NIT available, ranging from 1 to 99."
+			::=  { virtualPhysicalChannelEth 3 }
+
+ethSettingsOverwriteVirtualChannel OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the specified Virtual Channel descriptor for the TS/IP incoming TS/BTS if NIT available, ranging from 1 to 99."
+			::=  { virtualPhysicalChannelEth 4 }
+
+tunerSettingsPhysicalChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to specify the Physical Channel descriptor for the Tuner incoming TS/BTS if NIT available, ranging according to adopted channelization."
+			::=  { virtualPhysicalChannelTuner 1 }
+
+tunerSettingsOverwritePhysicalChannel OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the specified Physical Channel descriptor for the Tuner incoming TS/BTS if NIT available, ranging according to adopted channelization."
+			::=  { virtualPhysicalChannelTuner 2 }
+
+tunerSettingsVirtualChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to specify the Virtual Channel descriptor for the Tuner incoming TS/BTS if NIT available, ranging from 1 to 99."
+			::=  { virtualPhysicalChannelTuner 3 }
+
+tunerSettingsOverwriteVirtualChannel OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the specified Virtual Channel descriptor for the Tuner incoming TS/BTS if NIT available, ranging from 1 to 99."
+			::=  { virtualPhysicalChannelTuner 4 }
+
+totEditorAsi1Overwrite OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the UTC Time for the ASI 1 incoming TS/BTS from TOT if available using the TX Time."
+			::=  { totEditorAsi1 1 }
+
+totEditorAsi1TxTimeOffset OBJECT-TYPE
+			SYNTAX INTEGER { negative12(0), negative11(1), negative10(2), negative9(3), negative8(4), negative7(5), negative6(6), negative5(7), negative4(8), negative3(9), negative2(10), negative1(11), zero(12), positive1(13), positive2(14), positive3(15), positive4(16), positive5(17), positive6(18), positive7(19), positive8(20), positive9(21), positive10(22), positive11(23), positive12(24) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Relationship between transmitter time and country time  for the ASI 1 incoming TS/BTS."
+			::=  { totEditorAsi1 2 }
+
+totEditorAsi2Overwrite OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the UTC Time for the ASI 2 incoming TS/BTS from TOT if available using the TX Time."
+			::=  { totEditorAsi2 1 }
+
+totEditorAsi2TxTimeOffset OBJECT-TYPE
+			SYNTAX INTEGER { negative12(0), negative11(1), negative10(2), negative9(3), negative8(4), negative7(5), negative6(6), negative5(7), negative4(8), negative3(9), negative2(10), negative1(11), zero(12), positive1(13), positive2(14), positive3(15), positive4(16), positive5(17), positive6(18), positive7(19), positive8(20), positive9(21), positive10(22), positive11(23), positive12(24) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Relationship between transmitter time and country time  for the ASI 2 incoming TS/BTS."
+			::=  { totEditorAsi2 2 }
+
+totEditorEthOverwrite OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the UTC Time for the TSoIP incoming TS/BTS from TOT if available using the TX Time."
+			::=  { totEditorEth 1 }
+
+totEditorEthTxTimeOffset OBJECT-TYPE
+			SYNTAX INTEGER { negative12(0), negative11(1), negative10(2), negative9(3), negative8(4), negative7(5), negative6(6), negative5(7), negative4(8), negative3(9), negative2(10), negative1(11), zero(12), positive1(13), positive2(14), positive3(15), positive4(16), positive5(17), positive6(18), positive7(19), positive8(20), positive9(21), positive10(22), positive11(23), positive12(24) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Relationship between transmitter time and country time  for the TSoIP incoming TS/BTS."
+			::=  { totEditorEth 2 }
+
+totEditorTunerOverwrite OBJECT-TYPE
+			SYNTAX INTEGER { no(0), yes(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Allows to overwrite the UTC Time for the Tuner incoming TS/BTS from TOT if available using the TX Time."
+			::=  { totEditorTuner 1 }
+
+totEditorTunerTimeOffset OBJECT-TYPE
+			SYNTAX INTEGER { negative12(0), negative11(1), negative10(2), negative9(3), negative8(4), negative7(5), negative6(6), negative5(7), negative4(8), negative3(9), negative2(10), negative1(11), zero(12), positive1(13), positive2(14), positive3(15), positive4(16), positive5(17), positive6(18), positive7(19), positive8(20), positive9(21), positive10(22), positive11(23), positive12(24) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Relationship between transmitter time and country time for the Tuner incoming TS/BTS."
+			::=  { totEditorTuner 2 }
+
+setupOperationalPower OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Set transmitter operational power which is less or equal than equipment nominal power. Maximum values of other parameters, such as the Programmed Output Power, might be affected by this configuration."
+			::=  { setupTransmitter 4 }
+
+password OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Insert the Setup Menu Password."
+			::=  { setupPassword 1 }
+
+passwordOn OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable Setup Menu Password."
+			::=  { setupPassword 2 }
+
+tunerTerrestrialChannel OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Specifies the receiving channel for the terrestrial tuner."
+			::=  { setupTerrestrialTuner 8 }
+
+sinalRuidoTunerTerrestrial OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Reception threshold of the terrestrial tuner, if the signal-to-noise ratio (C/N) is less than the threshold, the transmitter switches to the next stream priority.(Apply Mask 0,0)"
+			::=  { setupTerrestrialTuner 9 }
+
+rxLevelThresholdTunerTerrestrial OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Reception threshold of the terrestrial tuner, if the received signal strength is less than the threshold, the transmitter switches to the next stream priority."
+			::=  { setupTerrestrialTuner 10 }
+
+tunerTerrestreBerMonitor OBJECT-TYPE
+			SYNTAX INTEGER { previterbi(0), postviterbi(1), postrs(2) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Terrestrial Tuner Bit Errot Rate (BER) Monitoring ."
+			::=  { setupTerrestrialTuner 11 }
+
+tunerTerrestrialReset OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Reset the Terrestrial Tuner."
+			::=  { setupTerrestrialTuner 12 }
+
+bissControlEnable OBJECT-TYPE
+			SYNTAX INTEGER { off(0), asi1(1), asi2(2), tuner(3), tsoip(4), all(5) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable the BISS Descrambling. Allows to enable for each tranport stream input."
+			::=  { setupBissMode 1 }
+
+bissControlDecrypt OBJECT-TYPE
+			SYNTAX INTEGER { biss1(0), bisse(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Selects the BISS decryption mode."
+			::=  { setupBissMode 2 }
+
+bissControlKeyUser OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configures the Session Word (SW) using the 12-character  (Value must have 12 characters)."
+			::=  { setupBissBiss1 1 }
+
+bissControlEncryptedSwUser OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Configures the Encrypted Session Word (SW) using the 16-character  (Value must have 16 characters)."
+			::=  { setupBissBisse 1 }
+
+bissControlInjectedIdUser OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"The injected ID is a 14-character identifier  (Value must have 14 characters)."
+			::=  { setupBissBisse 2 }
+
+bissControlBuriedKey OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Enable or Disable the Buried key flag."
+			::=  { setupBissBisse 3 }
+
+bissService1ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService1 3 }
+
+bissService2ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService2 3 }
+
+bissService3ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService3 3 }
+
+bissService4ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService4 3 }
+
+bissService5ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService5 3 }
+
+bissService6ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService6 3 }
+
+bissService7ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService7 3 }
+
+bissService8ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService8 3 }
+
+bissService9ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService9 3 }
+
+bissService10ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService10 3 }
+
+bissService11ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService11 3 }
+
+bissService12ProgramId OBJECT-TYPE
+			SYNTAX INTEGER { off(0), on(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION 
+					"Disable or enable the decryption of the service. Non encrypted services will not appear on this list."
+			::=  { setupBissService12 3 }
+
+-- Traps
+systemCurrentAlarmTrap NOTIFICATION-TYPE
+			OBJECTS {
+					alarmPpsFail,
+					alarmAllPsuCommFail,
+					alarmAsi1Fail,
+					alarmAsi2Fail,
+					alarmBtsAlignmentError,
+					alarmCalibrationCrcFail,
+					alarmCamFail,
+					alarmClockLockFail,
+					alarmMuteFi,
+					alarmDescramblerFail,
+					alarmV50EqpFail,
+					alarmV15ExcFail,
+					alarmV28ExcFail,
+					alarmV3v3ExcFail,
+					alarmRfLoadFan,
+					alarmFifoOverflow,
+					alarmFifoUnderflow,
+					alarmV5FpgaFail,
+					alarmFpgaCommun,
+					alarmHighFpgaTemperature,
+					alarmHwFail,
+					alarmLoLockFail,
+					alarmLutDefault,
+					alarmLutFail,
+					alarmRfFilterFan,
+					alarmOcxoLockFail,
+					alarmOutputPowerZero,
+					alarmOverdriveLowPower,
+					alarmCriticalPaTemperature,
+					alarmHighPaCurrent,
+					alarmHighPaTemperature,
+					alarmZeroPaCurrent,
+					alarmSuperCriticalPaTemperature,
+					alarmPaTemperature,
+					alarmPaUnbalance,
+					alarmPsu1CommFail,
+					alarmPsu1HighCurrent,
+					alarmPsu1HighInputVoltage,
+					alarmPsu1HighTemp,
+					alarmPsu1HighVoltage,
+					alarmPsu1LowInputVoltage,
+					alarmPsu1LowVoltage,
+					alarmPsu2CommFail,
+					alarmPsu2HighCurrent,
+					alarmPsu2HighInputVoltage,
+					alarmPsu2HighTemp,
+					alarmPsu2HighVoltage,
+					alarmPsu2LowInputVoltage,
+					alarmPsu2LowVoltage,
+					alarmPsuLoadFan,
+					alarmHighFontCurrent,
+					alarmSuperCriticalPsuTemperature,
+					alarmReducedPower,
+					alarmReducedPowerByPsu,
+					alarmReducedPowerReflected,
+					alarmReducedPowerSfn,
+					alarmReducedPowerPaTemp,
+					alarmReflectedPowerError,
+					alarmRemoteRfMute,
+					alarmRfMuteByExternalCommand,
+					alarmRfMuteStreamLoss,
+					alarmReducedPowerTx,
+					alarmSfnMaxDelay,
+					alarmSfnNsiError,
+					alarmSfnOcxoUnlocked,
+					alarmSfnStreamError,
+					alarmStartedEquipment,
+					alarmStreamSyncLoss,
+					alarmTsOverEthernetFail,
+					alarmTunerUnlocked,
+					alarmSampleFeedbackFail,
+					alarmGpsUnlocked,
+					alarmExtPpsUnlocked,
+					alarmManagementIpAddrLocalReset,
+					alarmInvalidTmcc
+			} 
+			STATUS current
+			DESCRIPTION
+					"System Current Alarms Trap"
+			::= { alarms 5 }
+
+-- Objects
+allObjects  OBJECT-GROUP
+			OBJECTS {
+					networkStatus,
+					fpgaBoardTemperature,
+					fpgaFanRotation,
+					exciterPowerSupply3v3,
+					exciterPowerSupply5v,
+					exciterPowerSupply15v,
+					exciterPowerSupply28v,
+					exciterPower1Supply50v,
+					exciterPower2Supply50v,
+					exciterPower1SupplyCurrent,
+					exciterPower2SupplyCurrent,
+					exciterPower1SupplyAc,
+					exciterPower2SupplyAc,
+					exciterPower1InputVoltageType,
+					exciterPower2InputVoltageType,
+					exciterPower1SupplyTemperature,
+					exciterPower2SupplyTemperature,
+					camCardPresent,
+					camTsPresent,
+					camCardConfigStatus,
+					camDescrambler,
+					activeInput,
+					inputSteamType,
+					btsMode,
+					btsGuardInterval,
+					btsModulationLayerA,
+					btsNumberOfSegmentsLayerA,
+					btsCodeRateLayerA,
+					btsTimeInterleavingLengthLayerA,
+					btsModulationLayerB,
+					btsNumberOfSegmentsLayerB,
+					btsCodeRateLayerB,
+					btsTimeInterleavingLengthLayerB,
+					btsModulationLayerC,
+					btsNumberOfSegmentsLayerC,
+					btsCodeRateLayerC,
+					btsTimeInterleavingLengthLayerC,
+					equipmentInfo,
+					staticDelayFlag,
+					timeOffset,
+					internalGpsLocked,
+					internal1ppsLocked,
+					internalGpsConnected,
+					internalGpsDate,
+					internalGpsHour,
+					internalGpsSatFallowing,
+					internalGpsSnr01,
+					internalGpsSnr02,
+					internalGpsSnr03,
+					internalGpsSnr04,
+					internalGpsSnr05,
+					internalGpsSnr06,
+					internalGpsSnr07,
+					internalGpsSnr08,
+					internalGpsSnr09,
+					internalGpsSnr10,
+					internalGpsSnr11,
+					internalGpsSnr12,
+					internalGpsSnr13,
+					internalGpsSnr14,
+					internalGpsSnr15,
+					internalGpsSnr16,
+					ocxoLockStatus,
+					intGpsStatus,
+					extPpsStatus,
+					ext10mStatus,
+					curBtsStatus,
+					currentOcxoFrequencySetting,
+					lastOcxoFrequencySetting,
+					errorFrequency,
+					errorPhase,
+					timeLock,
+					dayLock,
+					programmedPower,
+					forwardPower,
+					forwardPowerSetupPower,
+					reflectedPower,
+					forwardPowerSensorVoltage,
+					reflectedPowerSensorVoltage,
+					alcVoltage,
+					paCurrent,
+					paTemperature,
+					paFanRotation,
+					satelliteTunerStatus,
+					satelliteTunerSnr,
+					measSatelliteTunerRxLevel,
+					satelliteTunerPer,
+					satelliteTunerBer,
+					satelliteTunerModulation,
+					satelliteTunerCoderate,
+					ppsInput,
+					sfnInfo,
+					btsAlignment,
+					timeStamp,
+					maximumDelay,
+					networkDelay,
+					localDelay,
+					processingDelay,
+					btsBufferUtilization,
+					sfnStatus,
+					merCurrentDemodulation,
+					merCurrent,
+					merBpsk,
+					merDqpsk,
+					merQpsk,
+					mer16qam,
+					mer64qam,
+					psdImdLow,
+					psdImdHigh,
+					nitStatus,
+					originalVirtualChannel,
+					originalPhysicalChannel,
+					transmittedVirtualChannel,
+					transmittedPhysicalChannel,
+					camServiceSidPid01,
+					camServiceSidPid02,
+					camServiceSidPid03,
+					camServiceSidPid04,
+					camServiceSidPid05,
+					camServiceSidPid06,
+					camServiceSidPid07,
+					camServiceSidPid08,
+					camServiceNameProg1,
+					camServiceNameProg2,
+					camServiceNameProg3,
+					camServiceNameProg4,
+					camServiceNameProg5,
+					camServiceNameProg6,
+					camServiceNameProg7,
+					camServiceNameProg8,
+					containerVersion,
+					fpgaFirmwareVersion,
+					cpuFirmwareVersion,
+					displayFirmwareVersion,
+					camVersion,
+					cimVersion,
+					cipDescription,
+					calibrationLockPid,
+					fdbLevelBeforeFilter,
+					lpcProgress,
+					lpcStatus,
+					dpdProgress,
+					dpdStatus,
+					feedbackPaprDpd,
+					dpdScale,
+					measTunerTerrestrialChannel,
+					measTerrestialTunerStatus,
+					measTerrestialTunerSignalNoise,
+					measTerrestialTunerRxLevel,
+					measTerrestialTunerBerA,
+					measTerrestialTunerBerB,
+					measTerrestialTunerBerC,
+					measManagementMacAddr,
+					measStreamMacAddr,
+					measEquipmentId,
+					measEquipmentSerialNumber,
+					measTunerNetworkId,
+					measTunerTerrestrialEwbsFlag,
+					measTunerSatPresent,
+					measTunerSatFreqError,
+					measTunerTerPresent,
+					receivedTunerNetworkId,
+					setTunerTerrestrialEwbsFlag,
+					bissService1ProgId,
+					bissService2ProgId,
+					bissService3ProgId,
+					bissService4ProgId,
+					bissService5ProgId,
+					bissService6ProgId,
+					bissService7ProgId,
+					bissService8ProgId,
+					bissService9ProgId,
+					bissService10ProgId,
+					bissService11ProgId,
+					bissService12ProgId,
+					bissService1Name,
+					bissService2Name,
+					bissService3Name,
+					bissService4Name,
+					bissService5Name,
+					bissService6Name,
+					bissService7Name,
+					bissService8Name,
+					bissService9Name,
+					bissService10Name,
+					bissService11Name,
+					bissService12Name,
+					bissLicenseFlag,
+					tsAnalyserLicenseFlag,
+					tsoipBidirectionalLicenseFlag,
+					nagravisionLicenseFlag,
+					verimatrixLicenseFlag,
+					irdetoLicenseFlag,
+					conaxLicenseFlag,
+					currentAlarmStatus,
+					pastAlarmStatus,
+					asi1BtsDecompressor,
+					asi1OriginalPcrRecovery,
+					asi1VerifyOpcrFlag,
+					asi1RemapValidNullPackets,
+					asi1KeepPayloadNullPacks,
+					asi1NullPacksContCounters,
+					asi1NullPacksPayload,
+					asi1NullPacksValidPid,
+					asi2BtsDecompressor,
+					asi2OriginalPcrRecovery,
+					asi2VerifyOpcrFlag,
+					asi2RemapValidNullPackets,
+					asi2KeepPayloadNullPacks,
+					asi2NullPacksContCounters,
+					asi2NullPacksPayload,
+					asi2NullPacksValidPid,
+					ethBtsDecompressor,
+					ethOriginalPcrRecovery,
+					ethVerifyOpcrFlag,
+					ethRemapValidNullPackets,
+					ethKeepPayloadNullPacks,
+					ethNullPacksContCounters,
+					ethNullPacksPayload,
+					ethNullPacksValidPid,
+					tunerBtsDecompressor,
+					tunerOriginalPcrRecovery,
+					tunerVerifyOpcrFlag,
+					tunerRemapValidNullPackets,
+					tunerKeepPayloadNullPacks,
+					tunerNullPacksContCounters,
+					tunerNullPacksPayload,
+					tunerNullPacksValidPid,
+					managementIpAddress,
+					managementGateway,
+					managementNetworkMask,
+					managementProxyEnable,
+					managementProxyAddress,
+					managementProxyPort,
+					streamRxIpAddress,
+					streamRxUdpPort,
+					streamProtocol,
+					streamHostIpAddr,
+					streamTxIpAddress,
+					streamTxPort,
+					streamTsTxPackets,
+					enableModulation,
+					rfOnOff,
+					programmedOutputPower,
+					sfnFailOutputPower,
+					linearPreCorrectionMode,
+					linearPreCorrectionRun,
+					nonLinearPreCorrectionMemory,
+					nonLinearPreCorrectionMode,
+					nonLinearPreCorrectionRun,
+					nonLinearPreCorrectionSaveMode,
+					psu1CommAlarmMask,
+					psu2CommAlarmMask,
+					asi1StreamAlarmMask,
+					asi2StreamAlarmMask,
+					tsOverEthernetStreamAlarmMask,
+					tunerStreamAlarmMask,
+					startedEquipmentMask,
+					rfFilterFanAlarmMask,
+					gpsAlarmMask,
+					ext1ppsAlarmMask,
+					descramblerFailMask,
+					actionOnSfnFail,
+					casDecryptType,
+					camEn1,
+					camEn2,
+					camEn3,
+					camEn4,
+					camEn5,
+					camEn6,
+					camEn7,
+					camEn8,
+					clockReference1stPriority,
+					clockReference2ndPriority,
+					clockReference3rdPriority,
+					clockReference4thPriority,
+					userCal,
+					clockEnableInternal1pps,
+					satelliteTunerLoFrequency,
+					satelliteTunerChannelFrequency,
+					satelliteTunerSymbolRate,
+					dvbsStandard,
+					satelliteTunerPolarity,
+					lnbSupply,
+					settingDescramblerFail,
+					automaticLevelControl,
+					muteOnStreamLoss,
+					externalRfMuteCommand,
+					bts1stPriority,
+					bts2ndPriority,
+					bts3rdPriority,
+					bts4thPriority,
+					btsPriorityMode,
+					asiOutput,
+					tsoipOutput,
+					expectedNetworkId,
+					rfMuteNetworkIdMismatch,
+					emergencyFlagSource,
+					localEmergencyFlagValue,
+					pidLayerTmccInfoCfg,
+					tunerReset,
+					sfnEnable,
+					localOffsetDelay,
+					equipmentId,
+					btsFifoMode,
+					btsFifoTime,
+					date,
+					time,
+					dateTimeAuto,
+					timeZoneOffset,
+					asi1SettingsPhysicalChannel,
+					asi1SettingsOverwritePhysicalChannel,
+					asi1SettingsVirtualChannel,
+					asi1SettingsOverwriteVirtualChannel,
+					asi2SettingsPhysicalChannel,
+					asi2SettingsOverwritePhysicalChannel,
+					asi2SettingsVirtualChannel,
+					asi2SettingsOverwriteVirtualChannel,
+					ethSettingsPhysicalChannel,
+					ethSettingsOverwritePhysicalChannel,
+					ethSettingsVirtualChannel,
+					ethSettingsOverwriteVirtualChannel,
+					tunerSettingsPhysicalChannel,
+					tunerSettingsOverwritePhysicalChannel,
+					tunerSettingsVirtualChannel,
+					tunerSettingsOverwriteVirtualChannel,
+					totEditorAsi1Overwrite,
+					totEditorAsi1TxTimeOffset,
+					totEditorAsi2Overwrite,
+					totEditorAsi2TxTimeOffset,
+					totEditorEthOverwrite,
+					totEditorEthTxTimeOffset,
+					totEditorTunerOverwrite,
+					totEditorTunerTimeOffset,
+					setupOperationalPower,
+					password,
+					passwordOn,
+					tunerTerrestrialChannel,
+					sinalRuidoTunerTerrestrial,
+					rxLevelThresholdTunerTerrestrial,
+					tunerTerrestreBerMonitor,
+					tunerTerrestrialReset,
+					bissControlEnable,
+					bissControlDecrypt,
+					bissControlKeyUser,
+					bissControlEncryptedSwUser,
+					bissControlInjectedIdUser,
+					bissControlBuriedKey,
+					bissService1ProgramId,
+					bissService2ProgramId,
+					bissService3ProgramId,
+					bissService4ProgramId,
+					bissService5ProgramId,
+					bissService6ProgramId,
+					bissService7ProgramId,
+					bissService8ProgramId,
+					bissService9ProgramId,
+					bissService10ProgramId,
+					bissService11ProgramId,
+					bissService12ProgramId,
+					resetEquipment
+			}
+			STATUS current
+			DESCRIPTION
+					"All Objects"
+			::= { groups 1 }
+
+END

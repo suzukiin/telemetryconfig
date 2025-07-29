@@ -108,6 +108,127 @@
       </div>
     </div>
 
+    <!-- Seção de Status do Equipamento SNMP -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <i class="fas fa-broadcast-tower"></i>
+        <h2>Status do Equipamento (EC710LP)</h2>
+        <div class="equipment-status" id="equipment-status">
+          <span class="status-badge" id="equipment-badge">Carregando...</span>
+        </div>
+      </div>
+      
+      <div class="section-content" id="equipment-section">
+        <!-- Medições Principais -->
+        <div class="measurements-grid">
+          <div class="measurement-card power" data-key="forwardPower">
+            <div class="measurement-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div class="measurement-content">
+              <h3>Potência Direta</h3>
+              <p class="measurement-value" id="forwardPower">-- W</p>
+              <span class="measurement-description">Potência RF total de saída</span>
+            </div>
+          </div>
+
+          <div class="measurement-card power" data-key="reflectedPower">
+            <div class="measurement-icon">
+              <i class="fas fa-undo-alt"></i>
+            </div>
+            <div class="measurement-content">
+              <h3>Potência Refletida</h3>
+              <p class="measurement-value" id="reflectedPower">-- W</p>
+              <span class="measurement-description">Potência RF refletida</span>
+            </div>
+          </div>
+
+          <div class="measurement-card temperature" data-key="paTemperature">
+            <div class="measurement-icon">
+              <i class="fas fa-thermometer-half"></i>
+            </div>
+            <div class="measurement-content">
+              <h3>Temperatura PA</h3>
+              <p class="measurement-value" id="paTemperature">-- °C</p>
+              <span class="measurement-description">Amplificador de potência</span>
+            </div>
+          </div>
+
+          <div class="measurement-card current" data-key="paCurrent">
+            <div class="measurement-icon">
+              <i class="fas fa-tachometer-alt"></i>
+            </div>
+            <div class="measurement-content">
+              <h3>Corrente PA</h3>
+              <p class="measurement-value" id="paCurrent">-- A</p>
+              <span class="measurement-description">Consumo do amplificador</span>
+            </div>
+          </div>
+
+          <div class="measurement-card voltage" data-key="powerSupply1_50v">
+            <div class="measurement-icon">
+              <i class="fas fa-plug"></i>
+            </div>
+            <div class="measurement-content">
+              <h3>Fonte 1 (+50V)</h3>
+              <p class="measurement-value" id="powerSupply1_50v">-- V</p>
+              <span class="measurement-description">Tensão fonte principal</span>
+            </div>
+          </div>
+
+          <div class="measurement-card voltage" data-key="powerSupply2_50v">
+            <div class="measurement-icon">
+              <i class="fas fa-plug"></i>
+            </div>
+            <div class="measurement-content">
+              <h3>Fonte 2 (+50V)</h3>
+              <p class="measurement-value" id="powerSupply2_50v">-- V</p>
+              <span class="measurement-description">Tensão fonte backup</span>
+            </div>
+          </div>
+
+          <div class="measurement-card signal" data-key="satelliteTunerSnr">
+            <div class="measurement-icon">
+              <i class="fas fa-satellite"></i>
+            </div>
+            <div class="measurement-content">
+              <h3>SNR Satélite</h3>
+              <p class="measurement-value" id="satelliteTunerSnr">-- dB</p>
+              <span class="measurement-description">Relação sinal/ruído</span>
+            </div>
+          </div>
+
+          <div class="measurement-card status" data-key="satelliteTunerStatus">
+            <div class="measurement-icon">
+              <i class="fas fa-satellite-dish"></i>
+            </div>
+            <div class="measurement-content">
+              <h3>Status Sintonizador</h3>
+              <p class="measurement-value" id="satelliteTunerStatus">--</p>
+              <span class="measurement-description">Lock do sintonizador</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alarmes Ativos -->
+        <div class="alarms-section">
+          <div class="alarms-header">
+            <h3><i class="fas fa-exclamation-triangle"></i> Alarmes Ativos</h3>
+            <div class="alarm-summary">
+              <span class="alarm-count critical" id="critical-alarms">0</span>
+              <span class="alarm-count warning" id="warning-alarms">0</span>
+            </div>
+          </div>
+          <div class="alarms-container" id="alarms-container">
+            <div class="no-alarms" id="no-alarms">
+              <i class="fas fa-check-circle"></i>
+              <span>Nenhum alarme ativo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Seção de Configuração SNMP -->
     <div class="dashboard-section">
       <div class="section-header">
@@ -118,7 +239,6 @@
         </button>
       </div>
       
-      <div class="section-content" id="config-section">
       <div class="section-content" id="config-section">
         <form action="/salvar" method="POST" class="telemetry-form">
           <div class="form-row">
@@ -240,6 +360,7 @@
 
   <script>
     let systemData = {};
+    let equipmentData = {};
 
     // Função para atualizar dados do sistema via API
     async function updateSystemStats() {
@@ -293,6 +414,165 @@
         console.error('❌ Erro na requisição:', error);
         showError('Erro de conectividade com o servidor');
       }
+    }
+
+    // Função para atualizar dados do equipamento via API
+    async function updateEquipmentData() {
+      try {
+        const response = await fetch('/api/equipment-data');
+        const data = await response.json();
+        
+        if (response.ok) {
+          equipmentData = data;
+          
+          const equipmentBadge = document.getElementById('equipment-badge');
+          
+          if (data.configured) {
+            equipmentBadge.className = 'status-badge online';
+            equipmentBadge.textContent = 'Conectado';
+            
+            // Atualizar medições
+            updateMeasurements(data.measurements);
+            
+            // Atualizar alarmes
+            updateAlarms(data.alarms);
+            
+            console.log('✅ Dados do equipamento atualizados:', data);
+            
+            if (data.errors && data.errors.length > 0) {
+              console.warn('⚠️ Alguns erros ao ler dados:', data.errors);
+            }
+            
+          } else {
+            equipmentBadge.className = 'status-badge offline';
+            equipmentBadge.textContent = 'Não Configurado';
+            showNoEquipmentData();
+          }
+          
+        } else {
+          console.error('❌ Erro ao obter dados do equipamento:', data);
+          const equipmentBadge = document.getElementById('equipment-badge');
+          equipmentBadge.className = 'status-badge error';
+          equipmentBadge.textContent = 'Erro';
+          showNoEquipmentData();
+        }
+      } catch (error) {
+        console.error('❌ Erro na requisição dos dados do equipamento:', error);
+        const equipmentBadge = document.getElementById('equipment-badge');
+        equipmentBadge.className = 'status-badge error';
+        equipmentBadge.textContent = 'Erro';
+        showNoEquipmentData();
+      }
+    }
+
+    function updateMeasurements(measurements) {
+      const measurementKeys = ['forwardPower', 'reflectedPower', 'paTemperature', 'paCurrent', 
+                              'powerSupply1_50v', 'powerSupply2_50v', 'satelliteTunerSnr', 'satelliteTunerStatus'];
+      
+      measurementKeys.forEach(key => {
+        const element = document.getElementById(key);
+        const card = document.querySelector(`[data-key="${key}"]`);
+        
+        if (measurements[key]) {
+          const measurement = measurements[key];
+          element.textContent = `${measurement.value} ${measurement.unit}`;
+          
+          // Aplicar classes de status baseadas no tipo e valor
+          card.classList.remove('normal', 'warning', 'critical');
+          
+          if (key === 'paTemperature') {
+            const temp = parseFloat(measurement.value);
+            if (temp > 90) card.classList.add('critical');
+            else if (temp > 75) card.classList.add('warning');
+            else card.classList.add('normal');
+          } else if (key === 'reflectedPower') {
+            const power = parseFloat(measurement.value);
+            if (power > 50) card.classList.add('warning');
+            else card.classList.add('normal');
+          } else if (key === 'satelliteTunerStatus') {
+            if (measurement.value === 'Locked') card.classList.add('normal');
+            else card.classList.add('warning');
+          } else {
+            card.classList.add('normal');
+          }
+          
+        } else {
+          element.textContent = '-- N/A';
+          card.classList.remove('normal', 'warning', 'critical');
+          card.classList.add('offline');
+        }
+      });
+    }
+
+    function updateAlarms(alarms) {
+      const alarmsContainer = document.getElementById('alarms-container');
+      const noAlarms = document.getElementById('no-alarms');
+      const criticalCount = document.getElementById('critical-alarms');
+      const warningCount = document.getElementById('warning-alarms');
+      
+      // Contar alarmes por severidade
+      let criticalAlarms = 0;
+      let warningAlarms = 0;
+      const activeAlarms = [];
+      
+      Object.keys(alarms).forEach(key => {
+        const alarm = alarms[key];
+        if (alarm.active) {
+          activeAlarms.push(alarm);
+          if (alarm.severity === 'critical') criticalAlarms++;
+          else if (alarm.severity === 'warning') warningAlarms++;
+        }
+      });
+      
+      // Atualizar contadores
+      criticalCount.textContent = criticalAlarms;
+      warningCount.textContent = warningAlarms;
+      
+      // Limpar container
+      alarmsContainer.innerHTML = '';
+      
+      if (activeAlarms.length === 0) {
+        alarmsContainer.appendChild(noAlarms);
+      } else {
+        activeAlarms.forEach(alarm => {
+          const alarmElement = document.createElement('div');
+          alarmElement.className = `alarm-item ${alarm.severity}`;
+          alarmElement.innerHTML = `
+            <div class="alarm-icon">
+              <i class="fas ${alarm.severity === 'critical' ? 'fa-exclamation-circle' : 'fa-exclamation-triangle'}"></i>
+            </div>
+            <div class="alarm-content">
+              <h4>${alarm.name}</h4>
+              <p>${alarm.description}</p>
+              <span class="alarm-type">${alarm.type}</span>
+            </div>
+          `;
+          alarmsContainer.appendChild(alarmElement);
+        });
+      }
+    }
+
+    function showNoEquipmentData() {
+      // Limpar todas as medições
+      const measurementKeys = ['forwardPower', 'reflectedPower', 'paTemperature', 'paCurrent', 
+                              'powerSupply1_50v', 'powerSupply2_50v', 'satelliteTunerSnr', 'satelliteTunerStatus'];
+      
+      measurementKeys.forEach(key => {
+        const element = document.getElementById(key);
+        const card = document.querySelector(`[data-key="${key}"]`);
+        element.textContent = '-- N/A';
+        card.classList.remove('normal', 'warning', 'critical');
+        card.classList.add('offline');
+      });
+      
+      // Limpar alarmes
+      const alarmsContainer = document.getElementById('alarms-container');
+      const noAlarms = document.getElementById('no-alarms');
+      alarmsContainer.innerHTML = '';
+      alarmsContainer.appendChild(noAlarms);
+      
+      document.getElementById('critical-alarms').textContent = '0';
+      document.getElementById('warning-alarms').textContent = '0';
     }
 
     function showError(message) {
@@ -474,9 +754,13 @@
 
     // Inicializar dados do sistema
     updateSystemStats();
+    updateEquipmentData();
     
     // Atualizar dados do sistema a cada 30 segundos
     setInterval(updateSystemStats, 30000);
+    
+    // Atualizar dados do equipamento a cada 15 segundos (mais frequente para alarmes)
+    setInterval(updateEquipmentData, 15000);
     
     // Log de inicialização
     addLogEntry('INFO', 'Dashboard carregado com sucesso');

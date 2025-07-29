@@ -3,10 +3,15 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const { exec } = require('child_process');
 const os = require('os');
+const MIBParser = require('./mib-parser');
 const app = express();
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Inicializar o parser MIB
+const mibParser = new MIBParser();
 
 // Função para executar comandos shell e retornar promessa
 function execPromise(command) {
@@ -19,6 +24,113 @@ function execPromise(command) {
             resolve(stdout.trim());
         });
     });
+}
+
+// Função para ler valores SNMP
+async function getSNMPValue(ip, community, oid) {
+    try {
+        const command = `snmpget -v2c -c ${community} ${ip} ${oid}`;
+        const result = await execPromise(command);
+        
+        // Extrair o valor da resposta SNMP
+        const match = result.match(/=\s*[\w-]+:\s*(.+)$/);
+        if (match) {
+            return match[1].trim();
+        }
+        return null;
+    } catch (error) {
+        console.error(`Erro ao ler SNMP ${oid}:`, error.message);
+        return null;
+    }
+}
+
+// Função para coletar dados do equipamento via SNMP
+async function getEquipmentData() {
+    try {
+        // Verificar se existe configuração salva
+        if (!fs.existsSync('config.json')) {
+            return {
+                configured: false,
+                message: 'Equipamento não configurado'
+            };
+        }
+
+        const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+        const { ip, comunidade } = config;
+
+        if (!ip || !comunidade) {
+            return {
+                configured: false,
+                message: 'Configuração incompleta'
+            };
+        }
+
+        const measurements = {};
+        const alarms = {};
+        const errors = [];
+
+        // Obter medições críticas
+        const criticalMeasurements = mibParser.getCriticalMeasurements();
+        for (const key of criticalMeasurements) {
+            const measurement = mibParser.getMeasurements()[key];
+            if (measurement) {
+                try {
+                    const rawValue = await getSNMPValue(ip, comunidade, measurement.oid);
+                    if (rawValue !== null) {
+                        measurements[key] = {
+                            value: mibParser.formatValue(key, rawValue),
+                            unit: measurement.unit,
+                            name: measurement.name,
+                            description: measurement.description,
+                            type: measurement.type,
+                            raw: rawValue
+                        };
+                    }
+                } catch (error) {
+                    errors.push(`Erro ao ler ${measurement.name}: ${error.message}`);
+                }
+            }
+        }
+
+        // Obter alarmes críticos
+        const criticalAlarms = mibParser.getCriticalAlarms();
+        for (const key of criticalAlarms) {
+            const alarm = mibParser.getAlarms()[key];
+            if (alarm) {
+                try {
+                    const rawValue = await getSNMPValue(ip, comunidade, alarm.oid);
+                    if (rawValue !== null) {
+                        const status = mibParser.getAlarmStatus(key, rawValue);
+                        if (status) {
+                            alarms[key] = status;
+                        }
+                    }
+                } catch (error) {
+                    errors.push(`Erro ao ler alarme ${alarm.name}: ${error.message}`);
+                }
+            }
+        }
+
+        return {
+            configured: true,
+            measurements,
+            alarms,
+            errors,
+            equipmentConfig: {
+                ip,
+                community: comunidade,
+                lastUpdate: new Date().toISOString()
+            }
+        };
+
+    } catch (error) {
+        console.error('Erro ao obter dados do equipamento:', error);
+        return {
+            configured: false,
+            error: error.message,
+            message: 'Erro ao acessar dados do equipamento'
+        };
+    }
 }
 
 // Função para obter dados do sistema
@@ -122,6 +234,35 @@ app.get('/api/system-data', async (req, res) => {
         res.json(systemData);
     } catch (error) {
         console.error('Erro na API system-data:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
+// API para obter dados do equipamento SNMP
+app.get('/api/equipment-data', async (req, res) => {
+    try {
+        const equipmentData = await getEquipmentData();
+        res.json(equipmentData);
+    } catch (error) {
+        console.error('Erro na API equipment-data:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
+// API para obter informações do MIB
+app.get('/api/mib-info', (req, res) => {
+    try {
+        const measurements = mibParser.getMeasurementOids();
+        const alarms = mibParser.getAlarmOids();
+        
+        res.json({
+            measurements,
+            alarms,
+            criticalMeasurements: mibParser.getCriticalMeasurements(),
+            criticalAlarms: mibParser.getCriticalAlarms()
+        });
+    } catch (error) {
+        console.error('Erro na API mib-info:', error);
         res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
